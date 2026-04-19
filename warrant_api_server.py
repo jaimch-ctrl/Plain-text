@@ -15,10 +15,49 @@ def format_date(date_str):
 
 
 def get_stock_name(stock):
-    return "台積電"
+    try:
+        url = f"https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_{stock}.tw"
+        
+        headers = {
+            "User-Agent": "Mozilla/5.0"
+        }
+
+        res = requests.get(url, headers=headers, timeout=10)
+        data = res.json()
+
+        if not data["msgArray"]:
+            return "未知股票"
+
+        return data["msgArray"][0].get("n", "未知股票")
+
+    except Exception as e:
+        print("name error:", e)
+        return "未知股票"
     
 def get_stock_volume(stock):
-    return 12345678, "114/04/19"
+    try:
+        url = f"https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_{stock}.tw"
+        
+        headers = {
+            "User-Agent": "Mozilla/5.0"
+        }
+
+        res = requests.get(url, headers=headers, timeout=10)
+        data = res.json()
+
+        if not data["msgArray"]:
+            return 0, ""
+
+        info = data["msgArray"][0]
+
+        volume = int(info.get("v", "0"))
+        date = info.get("d", "")
+
+        return volume, date
+
+    except Exception as e:
+        print("volume error:", e)
+        return 0, ""
 
 @app.route("/api/warrant/top")
 def get_top():
