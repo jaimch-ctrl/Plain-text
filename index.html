@@ -1,81 +1,558 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>權證查詢</title>
-<style>
-body {
-    font-family: -apple-system;
-    background: #f5f6fa;
-    padding: 20px;
-}
-.card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-input, button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-}
-button {
-    background: black;
-    color: white;
-}
-pre {
-    background: #111;
-    color: #0f0;
-    padding: 10px;
-    border-radius: 10px;
-    overflow: auto;
-}
-</style>
-</head>
-
-<body>
-
-<div class="card">
-<h2>權證查詢</h2>
-
-<p>API：</p>
-<input id="api" value="https://plain-text.onrender.com">
-
-<p>股票代號：</p>
-<input id="stock" placeholder="例如 2454">
-
-<button onclick="run()">查詢</button>
-
-<div id="result" class="result"></div>
-
-<script>
-async function run(){
-    const api = document.getElementById('api').value;
-    const stock = document.getElementById('stock').value;
-
-    const res = await fetch(api + "/api/warrant/top?stock=" + stock);
-    const data = await res.json();
-
-  let html = "";
-
-html += "股票：" + data.stock + "<br><br>";
-
-html += "最熱門：<br>";
-html += data.top.code + "（量：" + data.top.volume + "）<br><br>";
-
-html += "Top 3：<br>";
-
-data.top3.forEach(function(x) {
-  html += x.code + "（量：" + x.volume + "）<br>";
-});
-
-document.getElementById('result').innerHTML = html;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>權證查詢終端</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121a2b;
+      --panel-2:#18233a;
+      --line:#24324d;
+      --text:#edf3ff;
+      --muted:#97a8c7;
+      --accent:#5aa7ff;
+      --accent-2:#62e0c1;
+      --hot:#ffb84d;
+      --success:#35c48a;
+      --danger:#ff6b6b;
+      --shadow:0 12px 30px rgba(0,0,0,.32);
     }
-</script>
 
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(90,167,255,.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(98,224,193,.08), transparent 24%),
+        linear-gradient(180deg,#08101d 0%, #0c1322 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:28px 16px 40px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+      gap:12px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .brand-badge{
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#07101f;
+      font-weight:900;
+      box-shadow:var(--shadow);
+    }
+
+    .brand-title{
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:.02em;
+      margin:0;
+    }
+
+    .brand-sub{
+      margin:2px 0 0;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .status-chip{
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(98,224,193,.08);
+      border:1px solid rgba(98,224,193,.24);
+      color:var(--accent-2);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:16px;
+    }
+
+    @media (max-width: 860px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .card{
+      background:rgba(18,26,43,.94);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-head{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .card-title{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.08em;
+      color:var(--muted);
+      text-transform:uppercase;
+      font-weight:700;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--accent-2);
+      box-shadow:0 0 14px rgba(98,224,193,.65);
+    }
+
+    .card-body{
+      padding:18px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .input{
+      width:100%;
+      background:var(--panel-2);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:15px 14px;
+      font-size:16px;
+      outline:none;
+      transition:border-color .2s, box-shadow .2s, transform .08s;
+      margin-bottom:14px;
+    }
+
+    .input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(90,167,255,.14);
+    }
+
+    .btn{
+      width:100%;
+      border:none;
+      border-radius:14px;
+      padding:16px 14px;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+      color:#06101c;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      box-shadow:0 10px 22px rgba(90,167,255,.22);
+      transition:transform .08s, opacity .2s;
+    }
+
+    .btn:active{
+      transform:scale(.99);
+    }
+
+    .btn:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+    }
+
+    .helper{
+      margin-top:14px;
+      font-size:12px;
+      line-height:1.7;
+      color:var(--muted);
+    }
+
+    .loading,
+    .empty{
+      min-height:360px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      color:var(--muted);
+      text-align:center;
+      padding:28px;
+    }
+
+    .loading .pulse{
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      border:3px solid rgba(90,167,255,.15);
+      border-top-color:var(--accent);
+      animation:spin 1s linear infinite;
+      margin-bottom:14px;
+    }
+
+    @keyframes spin{
+      to{transform:rotate(360deg)}
+    }
+
+    .quote-box{
+      background:linear-gradient(180deg,#16233a 0%, #10182a 100%);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      margin-bottom:14px;
+    }
+
+    .quote-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .tag{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      background:rgba(255,184,77,.1);
+      border:1px solid rgba(255,184,77,.24);
+      color:var(--hot);
+      margin-bottom:10px;
+    }
+
+    .quote-stock{
+      font-size:28px;
+      font-weight:900;
+      line-height:1;
+      margin-bottom:8px;
+    }
+
+    .quote-name{
+      font-size:17px;
+      font-weight:700;
+      color:var(--text);
+      word-break:break-word;
+    }
+
+    .quote-volume{
+      text-align:right;
+      min-width:110px;
+    }
+
+    .quote-volume .k{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .quote-volume .v{
+      font-size:30px;
+      font-weight:900;
+      color:var(--hot);
+      letter-spacing:.02em;
+    }
+
+    .metric-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+    }
+
+    .metric{
+      background:rgba(255,255,255,.02);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+    }
+
+    .metric .k{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .metric .v{
+      font-size:17px;
+      font-weight:800;
+      word-break:break-word;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin:18px 0 10px;
+    }
+
+    .section-title h3{
+      margin:0;
+      font-size:15px;
+      letter-spacing:.06em;
+      color:var(--muted);
+      text-transform:uppercase;
+    }
+
+    .list{
+      display:grid;
+      gap:10px;
+    }
+
+    .row{
+      background:var(--panel-2);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .row-left{
+      min-width:0;
+    }
+
+    .rank{
+      font-size:12px;
+      color:var(--accent-2);
+      margin-bottom:4px;
+      font-weight:700;
+    }
+
+    .code{
+      font-size:20px;
+      font-weight:900;
+      line-height:1.1;
+    }
+
+    .sub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:5px;
+    }
+
+    .vol{
+      white-space:nowrap;
+      text-align:right;
+    }
+
+    .vol .k{
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:5px;
+    }
+
+    .vol .v{
+      font-size:20px;
+      font-weight:900;
+      color:var(--text);
+    }
+
+    .msg{
+      margin-top:12px;
+      min-height:22px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .msg.error{
+      color:var(--danger);
+    }
+
+    .footer-note{
+      margin-top:14px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-badge">W</div>
+        <div>
+          <h1 class="brand-title">權證查詢終端</h1>
+          <p class="brand-sub">Warrant Lookup Terminal</p>
+        </div>
+      </div>
+      <div class="status-chip">Render API 已連線</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-head">
+          <h2 class="card-title">查詢面板</h2>
+          <div class="dot"></div>
+        </div>
+        <div class="card-body">
+          <label for="api">API 來源</label>
+          <input id="api" class="input" value="https://plain-text.onrender.com">
+
+          <label for="stock">股票代號</label>
+          <input id="stock" class="input" placeholder="例如 2454" inputmode="numeric">
+
+          <button id="runBtn" class="btn" onclick="run()">查詢</button>
+
+          <div id="msg" class="msg"></div>
+
+          <div class="footer-note">
+            ① 目前畫面已接上你的 Render API。<br>
+            ② 若免費方案休眠，第一次查詢可能會稍慢。<br>
+            ③ 目前資料仍是測試資料格式，但流程已完整打通。
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2 class="card-title">查詢結果</h2>
+          <div class="dot"></div>
+        </div>
+        <div class="card-body" id="resultWrap">
+          <div class="empty">
+            <div style="font-size:42px;margin-bottom:10px;">📈</div>
+            <div style="font-weight:800;font-size:18px;margin-bottom:6px;">等待查詢</div>
+            <div>輸入股票代號後，按下「查詢」即可顯示最熱門權證與前 3 檔。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function run(){
+      const api = document.getElementById('api').value.trim();
+      const stock = document.getElementById('stock').value.trim();
+      const resultWrap = document.getElementById('resultWrap');
+      const msg = document.getElementById('msg');
+      const btn = document.getElementById('runBtn');
+
+      if(!stock){
+        msg.className = "msg error";
+        msg.innerText = "請先輸入股票代號。";
+        return;
+      }
+
+      msg.className = "msg";
+      msg.innerText = "查詢中…";
+      btn.disabled = true;
+
+      resultWrap.innerHTML = `
+        <div class="loading">
+          <div class="pulse"></div>
+          <div style="font-weight:800;margin-bottom:6px;">查詢中</div>
+          <div>若 Render 正在喚醒，第一次可能會慢一點。</div>
+        </div>
+      `;
+
+      try{
+        const res = await fetch(api + "/api/warrant/top?stock=" + stock);
+        const data = await res.json();
+
+        if(!res.ok || !data.top){
+          throw new Error("查詢失敗");
+        }
+
+        const top3Html = (data.top3 || []).map(function(x, idx){
+          return `
+            <div class="row">
+              <div class="row-left">
+                <div class="rank">TOP ${idx + 1}</div>
+                <div class="code">${x.code}</div>
+                <div class="sub">權證代碼</div>
+              </div>
+              <div class="vol">
+                <div class="k">成交量</div>
+                <div class="v">${Number(x.volume || 0).toLocaleString()}</div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        resultWrap.innerHTML = `
+          <div class="quote-box">
+            <div class="tag">最高成交量</div>
+            <div class="quote-top">
+              <div>
+                <div class="quote-stock">${data.stock}</div>
+                <div class="quote-name">${data.top.code}</div>
+              </div>
+              <div class="quote-volume">
+                <div class="k">成交量</div>
+                <div class="v">${Number(data.top.volume || 0).toLocaleString()}</div>
+              </div>
+            </div>
+
+            <div class="metric-grid">
+              <div class="metric">
+                <div class="k">股票代號</div>
+                <div class="v">${data.stock}</div>
+              </div>
+              <div class="metric">
+                <div class="k">最熱門代碼</div>
+                <div class="v">${data.top.code}</div>
+              </div>
+              <div class="metric">
+                <div class="k">資料狀態</div>
+                <div class="v">API 已回應</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">
+            <h3>Top 3 權證</h3>
+          </div>
+
+          <div class="list">
+            ${top3Html}
+          </div>
+        `;
+
+        msg.className = "msg";
+        msg.innerText = "查詢完成。";
+      }catch(e){
+        msg.className = "msg error";
+        msg.innerText = "查詢失敗，請稍後再試。";
+        resultWrap.innerHTML = `
+          <div class="empty">
+            <div style="font-size:42px;margin-bottom:10px;">⚠️</div>
+            <div style="font-weight:800;font-size:18px;margin-bottom:6px;">查詢失敗</div>
+            <div>可能是 Render 尚未喚醒，或 API 暫時沒有回應。</div>
+          </div>
+        `;
+      }finally{
+        btn.disabled = false;
+      }
+    }
+  </script>
 </body>
 </html>
