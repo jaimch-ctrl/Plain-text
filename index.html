@@ -44,10 +44,10 @@
   inset:0;
 
   background:
-    linear-gradient(rgba(8,12,23,.40), rgba(8,12,23,.55)),
-    url("./IMG_1270.jpeg") center center / 420px auto no-repeat;
+  linear-gradient(rgba(8,12,23,.40), rgba(8,12,23,.55)),
+  url("./IMG_1270.jpeg") 68% 52% / 340px auto no-repeat;
 
-  opacity:.05;
+opacity:.045;
 
   pointer-events:none;
   z-index:0;
@@ -55,18 +55,18 @@
 
     /* 浮水印文字 */
     body::after{
-      content:"Jean × Mino Internal";
-      position:fixed;
-      right:26px;
-      bottom:18px;
-      color:rgba(255,255,255,.14);
-      font-size:18px;
-      font-weight:700;
-      letter-spacing:.04em;
-      pointer-events:none;
-      z-index:1;
-      white-space:nowrap;
-    }
+  content:"Jean × Mino Internal";
+  position:fixed;
+  right:22px;
+  bottom:14px;
+  color:rgba(255,255,255,.09);
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.08em;
+  pointer-events:none;
+  z-index:1;
+  white-space:nowrap;
+}
 
     /* 動態光點層 */
     .fx{
