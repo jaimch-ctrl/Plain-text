@@ -3,91 +3,84 @@ from flask_cors import CORS
 import requests
 from datetime import datetime
 import json
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 
 def format_date(date_str):
-    dt = datetime.strptime(date_str, "%Y-%m-%d")
-    year = dt.year - 1911
-    return f"{year}/{dt.month:02d}/{dt.day:02d}"
+    try:
+        if "/" in date_str:
+            return date_str
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
+        year = dt.year - 1911
+        return f"{year}/{dt.month:02d}/{dt.day:02d}"
+    except Exception:
+        return date_str
 
 
 def get_stock_name(stock):
+    # 先用 Shioaji / fallback 可再補
+    mapping = {
+        "2330": "台積電",
+        "2454": "聯發科",
+        "2317": "鴻海",
+        "2303": "聯電"
+    }
+    return mapping.get(str(stock), "未知股票")
+
+
+def get_stock_volume_from_shioaji(stock):
     try:
-        url = "https://mis.twse.com.tw/stock/api/getStockInfo.jsp"
-        params = {
-            "ex_ch": f"tse_{stock}.tw|otc_{stock}.tw",
-            "json": "1",
-            "delay": "0"
-        }
-        headers = {
-            "User-Agent": "Mozilla/5.0",
-            "Referer": "https://mis.twse.com.tw/stock/fibest.jsp"
-        }
+        import shioaji as sj
 
-        res = requests.get(url, params=params, headers=headers, timeout=10)
-        data = res.json()
-        arr = data.get("msgArray", [])
+        api_key = os.getenv("SHIOAJI_API_KEY", "").strip()
+        secret_key = os.getenv("SHIOAJI_SECRET_KEY", "").strip()
 
-        if arr and arr[0].get("n"):
-            return arr[0].get("n")
+        if not api_key or not secret_key:
+            return 0, "", "missing_key"
+
+        api = sj.Shioaji(simulation=False)
+        api.login(api_key=api_key, secret_key=secret_key)
+
+        contract = api.Contracts.Stocks[str(stock)]
+        snapshot = api.snapshots([contract])[0]
+
+        volume = int(getattr(snapshot, "volume", 0) or 0)
+
+        snap_date = getattr(snapshot, "date", "")
+        if snap_date:
+            try:
+                dt = datetime.strptime(str(snap_date), "%Y-%m-%d")
+                date_str = f"{dt.year - 1911}/{dt.month:02d}/{dt.day:02d}"
+            except Exception:
+                date_str = str(snap_date)
+        else:
+            now = datetime.now()
+            date_str = f"{now.year - 1911}/{now.month:02d}/{now.day:02d}"
+
+        try:
+            api.logout()
+        except Exception:
+            pass
+
+        return volume, date_str, "shioaji"
 
     except Exception as e:
-        print("MIS name error:", e)
-
-    try:
-        url = "https://openapi.twse.com.tw/v1/opendata/t187ap03_L"
-        res = requests.get(url, timeout=10)
-        data = res.json()
-
-        if isinstance(data, list):
-            for item in data:
-                if str(item.get("公司代號")) == str(stock):
-                    return item.get("公司名稱", "未知股票")
-    except Exception as e:
-        print("OpenAPI name error:", e)
-
-    return "未知股票"
+        print("shioaji error:", e)
+        return 0, "", "shioaji_error"
 
 
-def get_stock_volume(stock):
-    try:
-        url = "https://www.twse.com.tw/exchangeReport/STOCK_DAY"
-        params = {
-            "response": "json",
-            "date": datetime.now().strftime("%Y%m01"),
-            "stockNo": stock
-        }
-        headers = {
-            "User-Agent": "Mozilla/5.0",
-            "Referer": "https://www.twse.com.tw/"
-        }
-
-        res = requests.get(url, params=params, headers=headers, timeout=10)
-        data = res.json()
-
-        if "data" in data and data["data"]:
-            latest = data["data"][-1]
-            volume = int(str(latest[1]).replace(",", ""))
-            date = latest[0]
-            return volume, date
-
-    except Exception as e:
-        print("TWSE volume error:", e)
-
-    return 0, ""
-
-@app.route("/api/warrant/top")
 def get_top():
-    stock = request.args.get("stock", "")
+    stock = request.args.get("stock", "").strip()
 
     if not stock:
         return jsonify({"error": "missing stock"}), 400
 
     stock_name = get_stock_name(stock)
-    volume, date = get_stock_volume(stock)
+
+    volume, date, source = get_stock_volume_from_shioaji(stock)
 
     top = {
         "code": "033872",
@@ -105,6 +98,7 @@ def get_top():
         "stock_name": stock_name,
         "volume": volume,
         "date": date,
+        "source": source,
         "top": top,
         "top3": top3
     }
@@ -114,6 +108,8 @@ def get_top():
         content_type="application/json; charset=utf-8"
     )
 
+
+app.add_url_rule("/api/warrant/top", "get_top", get_top)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
