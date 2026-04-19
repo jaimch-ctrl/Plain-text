@@ -36,14 +36,18 @@ def get_stock_name(stock):
 def get_stock_volume(stock):
     try:
         url = f"https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&stockNo={stock}"
+        print("URL:", url)
+
         res = requests.get(url, timeout=10)
+        print("STATUS:", res.status_code)
+
         data = res.json()
+        print("DATA:", data)
 
         if "data" not in data or not data["data"]:
             return 0, ""
 
         latest = data["data"][-1]
-
         volume = int(latest[1].replace(",", ""))
         date = latest[0]
 
@@ -51,7 +55,6 @@ def get_stock_volume(stock):
     except Exception as e:
         print("volume error:", e)
         return 0, ""
-
 
 @app.route("/api/warrant/top")
 def get_top():
