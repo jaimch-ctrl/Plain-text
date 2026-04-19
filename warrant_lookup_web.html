@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="font-family:sans-serif;padding:20px">
+
+<h2>權證查詢（手機版）</h2>
+
+<p>API網址：</p>
+<input id="api" style="width:100%" placeholder="https://你的-api.onrender.com">
+
+<p>標的代號：</p>
+<input id="stock" placeholder="例如 2454">
+
+<br><br>
+<button onclick="run()">查詢</button>
+
+<pre id="result"></pre>
+
+<script>
+async function run(){
+  const api = document.getElementById('api').value;
+  const stock = document.getElementById('stock').value;
+
+  if(!api || !stock){
+    alert("請輸入 API 與代號");
+    return;
+  }
+
+  const res = await fetch(api + "/api/warrant/top?stock=" + stock);
+  const data = await res.json();
+
+  document.getElementById("result").innerText =
+    JSON.stringify(data, null, 2);
+}
+</script>
+
+</body>
+</html>
