@@ -35,40 +35,37 @@
         radial-gradient(circle at 85% 12%, rgba(115,240,210,.08), transparent 18%),
         linear-gradient(180deg,#08101d 0%, #0d1525 100%);
       position:relative;
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-touch-callout:none;
     }
 
-    /* 背景主圖：Mino */
     body::before{
-  content:"";
-  position:fixed;
-  inset:0;
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+        linear-gradient(rgba(8,12,23,.40), rgba(8,12,23,.55)),
+        url("./IMG_1270.jpeg") 68% 52% / 340px auto no-repeat;
+      opacity:.045;
+      pointer-events:none;
+      z-index:0;
+    }
 
-  background:
-  linear-gradient(rgba(8,12,23,.40), rgba(8,12,23,.55)),
-  url("./IMG_1270.jpeg") 68% 52% / 340px auto no-repeat;
-
-opacity:.045;
-
-  pointer-events:none;
-  z-index:0;
-}
-
-    /* 浮水印文字 */
     body::after{
-  content:"Jean × Mino Internal";
-  position:fixed;
-  right:22px;
-  bottom:14px;
-  color:rgba(255,255,255,.09);
-  font-size:14px;
-  font-weight:600;
-  letter-spacing:.08em;
-  pointer-events:none;
-  z-index:1;
-  white-space:nowrap;
-}
+      content:"Jean × Mino Internal";
+      position:fixed;
+      right:22px;
+      bottom:14px;
+      color:rgba(255,255,255,.09);
+      font-size:14px;
+      font-weight:600;
+      letter-spacing:.08em;
+      pointer-events:none;
+      z-index:1;
+      white-space:nowrap;
+    }
 
-    /* 動態光點層 */
     .fx{
       position:fixed;
       inset:0;
@@ -83,7 +80,7 @@ opacity:.045;
       border-radius:999px;
       background:radial-gradient(circle, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 70%);
       animation:floatUp linear infinite;
-      opacity:.35;
+      opacity:.22;
       filter:blur(.3px);
     }
 
@@ -94,15 +91,11 @@ opacity:.045;
     .fx span:nth-child(5){width:120px;height:120px;left:86%;top:76%;animation-duration:17s}
     .fx span:nth-child(6){width:60px;height:60px;left:60%;top:65%;animation-duration:12s}
 
- @keyframes floatMino {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
-}
-
-body::before{
-  animation: floatMino 12s ease-in-out infinite;
-}
+    @keyframes floatUp{
+      0%{transform:translateY(0) scale(1);opacity:.10}
+      30%{opacity:.20}
+      100%{transform:translateY(-120px) scale(1.06);opacity:0}
+    }
 
     .money{
       position:fixed;
@@ -114,8 +107,7 @@ body::before{
 
     .money i{
       position:absolute;
-      opacity:.10;
-      filter:blur(.2px);
+      opacity:.08;
       animation:drift 18s ease-in-out infinite alternate;
       font-style:normal;
       user-select:none;
@@ -299,11 +291,28 @@ body::before{
       background:linear-gradient(90deg,var(--accent),var(--accent2));
       box-shadow:0 12px 26px rgba(80,164,255,.22);
       transition:.18s ease;
+      margin-bottom:10px;
     }
 
     .btn:hover{filter:brightness(1.03)}
     .btn:active{transform:scale(.99)}
     .btn:disabled{opacity:.68;cursor:not-allowed}
+
+    .subbtn{
+      width:100%;
+      border:none;
+      border-radius:12px;
+      padding:12px 12px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      margin-bottom:10px;
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .subbtn:active{transform:scale(.99)}
 
     .msg{
       margin-top:12px;
@@ -321,8 +330,46 @@ body::before{
       color:var(--muted);
     }
 
-    .empty,
-    .loading{
+    .fav-box{
+      margin-top:14px;
+      padding:12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .fav-title{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:8px;
+      font-weight:700;
+    }
+
+    .fav-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .fav-chip{
+      border:none;
+      border-radius:999px;
+      padding:8px 12px;
+      background:rgba(105,180,255,.14);
+      color:var(--text);
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      border:1px solid rgba(105,180,255,.18);
+    }
+
+    .fav-empty{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .loading,
+    .empty{
       min-height:480px;
       display:flex;
       flex-direction:column;
@@ -347,6 +394,26 @@ body::before{
       to{transform:rotate(360deg)}
     }
 
+    .result-watermark{
+      position:relative;
+      overflow:hidden;
+    }
+
+    .result-watermark::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:url("./IMG_1270.jpeg") center center / 520px auto no-repeat;
+      opacity:.06;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .result-watermark > *{
+      position:relative;
+      z-index:1;
+    }
+
     .quote-box{
       position:relative;
       background:linear-gradient(180deg, rgba(37,57,94,.58), rgba(17,26,44,.82));
@@ -357,18 +424,7 @@ body::before{
       margin-bottom:14px;
     }
 
-.quote-box::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:url("./IMG_1270.jpeg") center center / 180px auto no-repeat;
-  opacity:.025;
-  pointer-events:none;
-}
-
     .tag{
-      position:relative;
-      z-index:1;
       display:inline-block;
       padding:6px 10px;
       border-radius:999px;
@@ -381,8 +437,6 @@ body::before{
     }
 
     .quote-top{
-      position:relative;
-      z-index:1;
       display:flex;
       justify-content:space-between;
       gap:12px;
@@ -399,6 +453,12 @@ body::before{
     .quote-name{
       font-size:18px;
       font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .quote-subname{
+      font-size:13px;
+      color:var(--muted);
     }
 
     .quote-volume{
@@ -420,15 +480,13 @@ body::before{
     }
 
     .metric-grid{
-      position:relative;
-      z-index:1;
       display:grid;
-      grid-template-columns:repeat(3,1fr);
+      grid-template-columns:repeat(4,1fr);
       gap:10px;
     }
 
-    @media (max-width: 620px){
-      .metric-grid{grid-template-columns:1fr}
+    @media (max-width: 760px){
+      .metric-grid{grid-template-columns:1fr 1fr}
       .quote-top{flex-direction:column}
       .quote-volume{text-align:left}
     }
@@ -457,6 +515,8 @@ body::before{
       align-items:center;
       justify-content:space-between;
       margin:18px 0 10px;
+      gap:10px;
+      flex-wrap:wrap;
     }
 
     .section-title h3{
@@ -466,6 +526,18 @@ body::before{
       font-weight:800;
       letter-spacing:.06em;
       text-transform:uppercase;
+    }
+
+    .copy-btn{
+      border:none;
+      border-radius:10px;
+      padding:8px 12px;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.08);
     }
 
     .list{
@@ -570,13 +642,22 @@ body::before{
           <input id="stock" class="input" placeholder="例如 2454" inputmode="numeric">
 
           <button id="runBtn" class="btn" onclick="run()">查詢</button>
+          <button class="subbtn" onclick="saveFavorite()">收藏目前代號</button>
 
           <div id="msg" class="msg"></div>
+
+          <div class="fav-box">
+            <div class="fav-title">常用代號收藏</div>
+            <div id="favList" class="fav-list">
+              <div class="fav-empty">目前尚未收藏</div>
+            </div>
+          </div>
 
           <div class="footer-note">
             ① 目前畫面已接上你的 Render API。<br>
             ② 若免費方案休眠，第一次查詢可能會稍慢。<br>
-            ③ 畫面含 Mino 品牌浮水印與視覺識別。
+            ③ 畫面含 Mino 品牌浮水印與視覺識別。<br>
+            ④ 本頁已限制一般複製行為，但無法百分之百防止轉傳。
           </div>
         </div>
       </div>
@@ -586,7 +667,7 @@ body::before{
           <h2 class="card-title">查詢結果</h2>
           <div class="dot"></div>
         </div>
-        <div class="card-body" id="resultWrap">
+        <div class="card-body result-watermark" id="resultWrap">
           <div class="empty">
             <div style="font-size:44px;margin-bottom:12px;">📈</div>
             <div style="font-size:18px;font-weight:900;margin-bottom:8px;color:var(--text);">等待查詢</div>
@@ -598,6 +679,73 @@ body::before{
   </div>
 
   <script>
+    const STOCK_KEY = "mino_last_stock";
+    const FAV_KEY = "mino_favorites";
+
+    function loadLastStock(){
+      const lastStock = localStorage.getItem(STOCK_KEY);
+      if(lastStock){
+        document.getElementById("stock").value = lastStock;
+      }
+    }
+
+    function getFavorites(){
+      try{
+        return JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
+      }catch(e){
+        return [];
+      }
+    }
+
+    function setFavorites(list){
+      localStorage.setItem(FAV_KEY, JSON.stringify(list));
+    }
+
+    function renderFavorites(){
+      const favList = document.getElementById("favList");
+      const list = getFavorites();
+
+      if(!list.length){
+        favList.innerHTML = '<div class="fav-empty">目前尚未收藏</div>';
+        return;
+      }
+
+      favList.innerHTML = list.map(function(code){
+        return '<button class="fav-chip" onclick="useFavorite(\'' + code + '\')">' + code + '</button>';
+      }).join("");
+    }
+
+    function useFavorite(code){
+      document.getElementById("stock").value = code;
+      localStorage.setItem(STOCK_KEY, code);
+    }
+
+    function saveFavorite(){
+      const stock = document.getElementById("stock").value.trim();
+      if(!stock){
+        alert("請先輸入股票代號。");
+        return;
+      }
+
+      let list = getFavorites();
+      if(!list.includes(stock)){
+        list.unshift(stock);
+      }
+      list = list.slice(0, 12);
+      setFavorites(list);
+      renderFavorites();
+      document.getElementById("msg").innerText = "已收藏代號：" + stock;
+    }
+
+    async function copyTopCode(code){
+      try{
+        await navigator.clipboard.writeText(code);
+        document.getElementById("msg").innerText = "已複製熱門權證代碼：" + code;
+      }catch(e){
+        document.getElementById("msg").innerText = "複製失敗，請手動複製。";
+      }
+    }
+
     async function run(){
       const api = document.getElementById('api').value.trim();
       const stock = document.getElementById('stock').value.trim();
@@ -610,6 +758,8 @@ body::before{
         msg.innerText = "請先輸入股票代號。";
         return;
       }
+
+      localStorage.setItem(STOCK_KEY, stock);
 
       msg.className = "msg";
       msg.innerText = "查詢中…";
@@ -633,6 +783,8 @@ body::before{
         }
 
         const now = new Date().toLocaleString("zh-TW");
+        const stockName = data.top.name || "未提供名稱";
+        const topCode = data.top.code || "";
 
         const top3Html = (data.top3 || []).map(function(x, idx){
           return `
@@ -656,7 +808,8 @@ body::before{
             <div class="quote-top">
               <div>
                 <div class="quote-stock">${data.stock}</div>
-                <div class="quote-name">${data.top.code}</div>
+                <div class="quote-name">${topCode}</div>
+                <div class="quote-subname">${stockName}</div>
               </div>
               <div class="quote-volume">
                 <div class="k">成交量</div>
@@ -670,8 +823,12 @@ body::before{
                 <div class="v">${data.stock}</div>
               </div>
               <div class="metric">
+                <div class="k">股票名稱</div>
+                <div class="v">${stockName}</div>
+              </div>
+              <div class="metric">
                 <div class="k">最熱門代碼</div>
-                <div class="v">${data.top.code}</div>
+                <div class="v">${topCode}</div>
               </div>
               <div class="metric">
                 <div class="k">查詢時間</div>
@@ -682,6 +839,7 @@ body::before{
 
           <div class="section-title">
             <h3>Top 3 權證</h3>
+            <button class="copy-btn" onclick="copyTopCode('${topCode}')">一鍵複製熱門權證代碼</button>
           </div>
 
           <div class="list">
@@ -706,6 +864,28 @@ body::before{
         btn.innerText = "查詢";
       }
     }
+
+    document.addEventListener("DOMContentLoaded", function(){
+      loadLastStock();
+      renderFavorites();
+    });
+
+    document.addEventListener("copy", function(e){
+      e.preventDefault();
+      document.getElementById("msg").innerText = "此頁已限制直接複製。";
+    });
+
+    document.addEventListener("contextmenu", function(e){
+      e.preventDefault();
+    });
+
+    document.addEventListener("selectstart", function(e){
+      e.preventDefault();
+    });
+
+    document.addEventListener("dragstart", function(e){
+      e.preventDefault();
+    });
   </script>
 </body>
 </html>
