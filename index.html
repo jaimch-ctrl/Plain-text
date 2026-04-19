@@ -39,16 +39,19 @@
 
     /* 背景主圖：Mino */
     body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:
-        linear-gradient(rgba(8,12,23,.40), rgba(8,12,23,.52)),
-        url("./IMG_1270.jpeg") center center / 420px auto no-repeat;
-      opacity:.18;
-      pointer-events:none;
-      z-index:0;
-    }
+  content:"";
+  position:fixed;
+  inset:0;
+
+  background:
+    linear-gradient(rgba(8,12,23,.40), rgba(8,12,23,.55)),
+    url("./IMG_1270.jpeg") center center / 420px auto no-repeat;
+
+  opacity:.05;
+
+  pointer-events:none;
+  z-index:0;
+}
 
     /* 浮水印文字 */
     body::after{
@@ -91,11 +94,15 @@
     .fx span:nth-child(5){width:120px;height:120px;left:86%;top:76%;animation-duration:17s}
     .fx span:nth-child(6){width:60px;height:60px;left:60%;top:65%;animation-duration:12s}
 
-    @keyframes floatUp{
-      0%{transform:translateY(0) scale(1);opacity:.10}
-      30%{opacity:.32}
-      100%{transform:translateY(-120px) scale(1.06);opacity:0}
-    }
+ @keyframes floatMino {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+body::before{
+  animation: floatMino 12s ease-in-out infinite;
+}
 
     .money{
       position:fixed;
