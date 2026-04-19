@@ -23,7 +23,8 @@ def get_stock_name(stock):
         if not isinstance(data, list):
             return "未知股票"
 
-        for item in data:if str(item.get("公司代號")) == str(stock):
+        for item in data:
+            if str(item.get("公司代號")) == str(stock):
                 return item.get("公司名稱", "未知股票")
 
         return "未知股票"
