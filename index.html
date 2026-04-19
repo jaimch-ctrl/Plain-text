@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>權證查詢終端</title>
+  <title>貓市報告｜權證查詢終端</title>
   <style>
     :root{
       --bg:#0b1020;
@@ -31,10 +31,45 @@
         linear-gradient(180deg,#08101d 0%, #0c1322 100%);
       color:var(--text);
       min-height:100vh;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      top:50%;
+      left:50%;
+      width:420px;
+      height:420px;
+      transform:translate(-50%,-50%);
+      background:url('mino-cat.png') no-repeat center;
+      background-size:contain;
+      opacity:.045;
+      pointer-events:none;
+      z-index:0;
+      filter:saturate(1.05);
+    }
+
+    body::after{
+      content:"貓市報告 × Mino";
+      position:fixed;
+      top:52%;
+      left:50%;
+      transform:translate(-50%,-50%) rotate(-18deg);
+      font-size:56px;
+      font-weight:900;
+      color:rgba(255,255,255,.035);
+      letter-spacing:.08em;
+      white-space:nowrap;
+      pointer-events:none;
+      z-index:0;
     }
 
     .wrap{
-      max-width:980px;
+      position:relative;
+      z-index:1;
+      max-width:1240px;
       margin:0 auto;
       padding:28px 16px 40px;
     }
@@ -53,17 +88,29 @@
       gap:12px;
     }
 
+    .brand-logo{
+      width:46px;
+      height:46px;
+      border-radius:12px;
+      object-fit:cover;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,.12);
+      background:#0f1728;
+      flex-shrink:0;
+    }
+
     .brand-badge{
-      width:42px;
-      height:42px;
+      width:46px;
+      height:46px;
       border-radius:12px;
       background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      display:flex;
+      display:none;
       align-items:center;
       justify-content:center;
       color:#07101f;
       font-weight:900;
       box-shadow:var(--shadow);
+      flex-shrink:0;
     }
 
     .brand-title{
@@ -87,17 +134,38 @@
       color:var(--accent-2);
       font-size:12px;
       white-space:nowrap;
+      flex-shrink:0;
     }
 
     .grid{
       display:grid;
       grid-template-columns:360px 1fr;
       gap:16px;
+      align-items:start;
     }
 
     @media (max-width: 860px){
       .grid{
         grid-template-columns:1fr;
+      }
+
+      body::before{
+        width:300px;
+        height:300px;
+        opacity:.04;
+      }
+
+      body::after{
+        font-size:34px;
+      }
+
+      .topbar{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .status-chip{
+        align-self:flex-start;
       }
     }
 
@@ -107,6 +175,7 @@
       border-radius:22px;
       box-shadow:var(--shadow);
       overflow:hidden;
+      backdrop-filter:blur(6px);
     }
 
     .card-head{
@@ -174,7 +243,11 @@
       color:#06101c;
       background:linear-gradient(90deg,var(--accent),var(--accent-2));
       box-shadow:0 10px 22px rgba(90,167,255,.22);
-      transition:transform .08s, opacity .2s;
+      transition:transform .08s, opacity .2s, filter .2s;
+    }
+
+    .btn:hover{
+      filter:brightness(1.04);
     }
 
     .btn:active{
@@ -186,11 +259,22 @@
       cursor:not-allowed;
     }
 
-    .helper{
+    .msg{
+      margin-top:12px;
+      min-height:22px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .msg.error{
+      color:var(--danger);
+    }
+
+    .footer-note{
       margin-top:14px;
       font-size:12px;
-      line-height:1.7;
       color:var(--muted);
+      line-height:1.7;
     }
 
     .loading,
@@ -285,6 +369,12 @@
       gap:10px;
     }
 
+    @media (max-width: 560px){
+      .metric-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
     .metric{
       background:rgba(255,255,255,.02);
       border:1px solid var(--line);
@@ -374,34 +464,22 @@
       font-weight:900;
       color:var(--text);
     }
-
-    .msg{
-      margin-top:12px;
-      min-height:22px;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .msg.error{
-      color:var(--danger);
-    }
-
-    .footer-note{
-      margin-top:14px;
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.7;
-    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="topbar">
       <div class="brand">
-        <div class="brand-badge">W</div>
+        <img
+          src="mino-cat.png"
+          alt="Mino Logo"
+          class="brand-logo"
+          onerror="this.style.display='none'; document.getElementById('fallbackBadge').style.display='flex';"
+        >
+        <div id="fallbackBadge" class="brand-badge">貓</div>
         <div>
-          <h1 class="brand-title">權證查詢終端</h1>
-          <p class="brand-sub">Warrant Lookup Terminal</p>
+          <h1 class="brand-title">貓市報告</h1>
+          <p class="brand-sub">Mino Warrant Terminal</p>
         </div>
       </div>
       <div class="status-chip">Render API 已連線</div>
@@ -427,7 +505,7 @@
           <div class="footer-note">
             ① 目前畫面已接上你的 Render API。<br>
             ② 若免費方案休眠，第一次查詢可能會稍慢。<br>
-            ③ 目前資料仍是測試資料格式，但流程已完整打通。
+            ③ 畫面含品牌浮水印與 Mino 視覺識別。
           </div>
         </div>
       </div>
