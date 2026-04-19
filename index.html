@@ -60,21 +60,21 @@ async function run(){
     const res = await fetch(api + "/api/warrant/top?stock=" + stock);
     const data = await res.json();
 
-  let html = `
-股票：${data.stock}<br><br>
+  let html = "";
 
-最熱門：<br>
-${data.top.code}（量：${data.top.volume}）<br><br>
+html += "股票：" + data.stock + "<br><br>";
 
-Top 3：<br>
-`;
+html += "最熱門：<br>";
+html += data.top.code + "（量：" + data.top.volume + "）<br><br>";
 
-data.top3.forEach(x => {
-  html += `${x.code}（量：${x.volume}）<br>`;
+html += "Top 3：<br>";
+
+data.top3.forEach(function(x) {
+  html += x.code + "（量：" + x.volume + "）<br>";
 });
 
 document.getElementById('result').innerHTML = html;
-}
+    }
 </script>
 
 </body>
