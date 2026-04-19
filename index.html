@@ -50,8 +50,7 @@ pre {
 
 <button onclick="run()">查詢</button>
 
-<pre id="result"></pre>
-</div>
+<div id="result" class="result"></div>
 
 <script>
 async function run(){
@@ -61,8 +60,20 @@ async function run(){
     const res = await fetch(api + "/api/warrant/top?stock=" + stock);
     const data = await res.json();
 
-    document.getElementById('result').innerText =
-        JSON.stringify(data, null, 2);
+  let html = `
+股票：${data.stock}<br><br>
+
+最熱門：<br>
+${data.top.code}（量：${data.top.volume}）<br><br>
+
+Top 3：<br>
+`;
+
+data.top3.forEach(x => {
+  html += `${x.code}（量：${x.volume}）<br>`;
+});
+
+document.getElementById('result').innerHTML = html;
 }
 </script>
 
