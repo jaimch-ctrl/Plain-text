@@ -3,136 +3,198 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>貓市報告｜權證查詢終端</title>
+  <title>貓市報告｜Mino Warrant Terminal</title>
   <style>
     :root{
-      --bg:#0b1020;
-      --panel:#121a2b;
-      --panel-2:#18233a;
-      --line:#24324d;
-      --text:#edf3ff;
-      --muted:#97a8c7;
-      --accent:#5aa7ff;
-      --accent-2:#62e0c1;
-      --hot:#ffb84d;
-      --success:#35c48a;
-      --danger:#ff6b6b;
-      --shadow:0 12px 30px rgba(0,0,0,.32);
+      --bg:#0a1020;
+      --panel:rgba(17,25,43,.82);
+      --panel-strong:rgba(20,30,52,.92);
+      --panel-soft:rgba(30,43,71,.72);
+      --line:rgba(132,166,255,.16);
+      --line-strong:rgba(132,166,255,.24);
+      --text:#edf4ff;
+      --muted:#9fb0d2;
+      --accent:#69b4ff;
+      --accent2:#7bf0d0;
+      --hot:#ffd15c;
+      --danger:#ff7c7c;
+      --shadow:0 18px 40px rgba(0,0,0,.32);
+      --radius:22px;
     }
 
     *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
 
     body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(90,167,255,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(98,224,193,.08), transparent 24%),
-        linear-gradient(180deg,#08101d 0%, #0c1322 100%);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
       color:var(--text);
       min-height:100vh;
-      position:relative;
       overflow-x:hidden;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(88,170,255,.14), transparent 20%),
+        radial-gradient(circle at 85% 12%, rgba(115,240,210,.08), transparent 18%),
+        linear-gradient(180deg,#08101d 0%, #0d1525 100%);
+      position:relative;
     }
 
+    /* 背景主圖：Mino */
     body::before{
       content:"";
       position:fixed;
-      top:50%;
-      left:50%;
-      width:420px;
-      height:420px;
-      transform:translate(-50%,-50%);
-      background:url('mino-cat.png') no-repeat center;
-      background-size:contain;
-      opacity:.045;
+      inset:0;
+      background:
+        linear-gradient(rgba(8,12,23,.40), rgba(8,12,23,.52)),
+        url("./IMG_1270.jpeg") center center / 420px auto no-repeat;
+      opacity:.18;
       pointer-events:none;
       z-index:0;
-      filter:saturate(1.05);
     }
 
+    /* 浮水印文字 */
     body::after{
-      content:"貓市報告 × Mino";
+      content:"Jean × Mino Internal";
       position:fixed;
-      top:52%;
-      left:50%;
-      transform:translate(-50%,-50%) rotate(-18deg);
-      font-size:56px;
-      font-weight:900;
-      color:rgba(255,255,255,.035);
-      letter-spacing:.08em;
+      right:26px;
+      bottom:18px;
+      color:rgba(255,255,255,.14);
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:.04em;
+      pointer-events:none;
+      z-index:1;
       white-space:nowrap;
+    }
+
+    /* 動態光點層 */
+    .fx{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
       pointer-events:none;
       z-index:0;
+    }
+
+    .fx span{
+      position:absolute;
+      display:block;
+      border-radius:999px;
+      background:radial-gradient(circle, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 70%);
+      animation:floatUp linear infinite;
+      opacity:.35;
+      filter:blur(.3px);
+    }
+
+    .fx span:nth-child(1){width:180px;height:180px;left:8%;top:82%;animation-duration:18s}
+    .fx span:nth-child(2){width:90px;height:90px;left:22%;top:68%;animation-duration:13s}
+    .fx span:nth-child(3){width:140px;height:140px;left:48%;top:86%;animation-duration:21s}
+    .fx span:nth-child(4){width:70px;height:70px;left:72%;top:80%;animation-duration:15s}
+    .fx span:nth-child(5){width:120px;height:120px;left:86%;top:76%;animation-duration:17s}
+    .fx span:nth-child(6){width:60px;height:60px;left:60%;top:65%;animation-duration:12s}
+
+    @keyframes floatUp{
+      0%{transform:translateY(0) scale(1);opacity:.10}
+      30%{opacity:.32}
+      100%{transform:translateY(-120px) scale(1.06);opacity:0}
+    }
+
+    .money{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+      overflow:hidden;
+    }
+
+    .money i{
+      position:absolute;
+      opacity:.10;
+      filter:blur(.2px);
+      animation:drift 18s ease-in-out infinite alternate;
+      font-style:normal;
+      user-select:none;
+    }
+
+    .money i:nth-child(1){left:10%;top:22%;font-size:84px;transform:rotate(-18deg)}
+    .money i:nth-child(2){left:74%;top:16%;font-size:62px;transform:rotate(15deg)}
+    .money i:nth-child(3){left:80%;top:68%;font-size:88px;transform:rotate(-12deg)}
+    .money i:nth-child(4){left:20%;top:74%;font-size:66px;transform:rotate(11deg)}
+    .money i:nth-child(5){left:48%;top:14%;font-size:56px;transform:rotate(8deg)}
+    .money i:nth-child(6){left:58%;top:76%;font-size:54px;transform:rotate(-10deg)}
+
+    @keyframes drift{
+      from{transform:translateY(0) rotate(-8deg)}
+      to{transform:translateY(-18px) rotate(8deg)}
     }
 
     .wrap{
       position:relative;
-      z-index:1;
-      max-width:1240px;
+      z-index:2;
+      max-width:1280px;
       margin:0 auto;
-      padding:28px 16px 40px;
+      padding:22px 16px 34px;
     }
 
     .topbar{
       display:flex;
-      align-items:center;
       justify-content:space-between;
-      margin-bottom:18px;
+      align-items:center;
       gap:12px;
+      margin-bottom:16px;
     }
 
     .brand{
       display:flex;
       align-items:center;
       gap:12px;
+      min-width:0;
     }
 
     .brand-logo{
-      width:46px;
-      height:46px;
-      border-radius:12px;
+      width:58px;
+      height:58px;
+      border-radius:50%;
       object-fit:cover;
+      border:2px solid rgba(255,255,255,.18);
       box-shadow:var(--shadow);
-      border:1px solid rgba(255,255,255,.12);
-      background:#0f1728;
+      background:#111827;
       flex-shrink:0;
     }
 
-    .brand-badge{
-      width:46px;
-      height:46px;
-      border-radius:12px;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    .brand-fallback{
+      width:58px;
+      height:58px;
+      border-radius:50%;
       display:none;
       align-items:center;
       justify-content:center;
-      color:#07101f;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#07111f;
       font-weight:900;
       box-shadow:var(--shadow);
       flex-shrink:0;
     }
 
     .brand-title{
-      font-size:24px;
-      font-weight:800;
-      letter-spacing:.02em;
       margin:0;
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:.02em;
     }
 
     .brand-sub{
-      margin:2px 0 0;
+      margin:3px 0 0;
       font-size:13px;
       color:var(--muted);
     }
 
     .status-chip{
-      padding:8px 12px;
+      padding:10px 14px;
       border-radius:999px;
-      background:rgba(98,224,193,.08);
-      border:1px solid rgba(98,224,193,.24);
-      color:var(--accent-2);
-      font-size:12px;
+      background:rgba(84,238,193,.08);
+      border:1px solid rgba(84,238,193,.24);
+      color:var(--accent2);
+      font-size:13px;
+      font-weight:700;
       white-space:nowrap;
       flex-shrink:0;
     }
@@ -144,63 +206,44 @@
       align-items:start;
     }
 
-    @media (max-width: 860px){
-      .grid{
-        grid-template-columns:1fr;
-      }
-
-      body::before{
-        width:300px;
-        height:300px;
-        opacity:.04;
-      }
-
-      body::after{
-        font-size:34px;
-      }
-
-      .topbar{
-        align-items:flex-start;
-        flex-direction:column;
-      }
-
-      .status-chip{
-        align-self:flex-start;
-      }
+    @media (max-width: 920px){
+      .grid{grid-template-columns:1fr}
+      .topbar{flex-direction:column;align-items:flex-start}
+      body::before{background-size:300px auto}
+      body::after{font-size:14px;right:14px;bottom:12px}
     }
 
     .card{
-      background:rgba(18,26,43,.94);
+      background:var(--panel);
       border:1px solid var(--line);
-      border-radius:22px;
+      border-radius:var(--radius);
       box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
       overflow:hidden;
-      backdrop-filter:blur(6px);
     }
 
     .card-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
       padding:16px 18px;
       border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
     }
 
     .card-title{
       margin:0;
       font-size:14px;
-      letter-spacing:.08em;
-      color:var(--muted);
-      text-transform:uppercase;
-      font-weight:700;
+      color:var(--text);
+      font-weight:800;
+      letter-spacing:.06em;
     }
 
     .dot{
       width:10px;
       height:10px;
       border-radius:50%;
-      background:var(--accent-2);
-      box-shadow:0 0 14px rgba(98,224,193,.65);
+      background:var(--accent2);
+      box-shadow:0 0 16px rgba(123,240,208,.65);
     }
 
     .card-body{
@@ -209,27 +252,32 @@
 
     label{
       display:block;
-      margin-bottom:8px;
       font-size:13px;
       color:var(--muted);
+      margin-bottom:8px;
     }
 
     .input{
       width:100%;
-      background:var(--panel-2);
-      color:var(--text);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:15px 14px;
-      font-size:16px;
+      border:none;
       outline:none;
-      transition:border-color .2s, box-shadow .2s, transform .08s;
       margin-bottom:14px;
+      padding:15px 14px;
+      border-radius:14px;
+      background:rgba(74,114,198,.16);
+      border:1px solid rgba(127,173,255,.15);
+      color:var(--text);
+      font-size:16px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .input::placeholder{
+      color:rgba(237,244,255,.42);
     }
 
     .input:focus{
-      border-color:var(--accent);
-      box-shadow:0 0 0 3px rgba(90,167,255,.14);
+      border-color:rgba(106,181,255,.45);
+      box-shadow:0 0 0 3px rgba(90,167,255,.12);
     }
 
     .btn{
@@ -237,63 +285,52 @@
       border:none;
       border-radius:14px;
       padding:16px 14px;
-      font-size:16px;
-      font-weight:800;
+      font-size:17px;
+      font-weight:900;
+      color:#09111d;
       cursor:pointer;
-      color:#06101c;
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      box-shadow:0 10px 22px rgba(90,167,255,.22);
-      transition:transform .08s, opacity .2s, filter .2s;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 12px 26px rgba(80,164,255,.22);
+      transition:.18s ease;
     }
 
-    .btn:hover{
-      filter:brightness(1.04);
-    }
-
-    .btn:active{
-      transform:scale(.99);
-    }
-
-    .btn:disabled{
-      opacity:.65;
-      cursor:not-allowed;
-    }
+    .btn:hover{filter:brightness(1.03)}
+    .btn:active{transform:scale(.99)}
+    .btn:disabled{opacity:.68;cursor:not-allowed}
 
     .msg{
       margin-top:12px;
       min-height:22px;
-      font-size:13px;
       color:var(--muted);
+      font-size:13px;
     }
 
-    .msg.error{
-      color:var(--danger);
-    }
+    .msg.error{color:var(--danger)}
 
     .footer-note{
       margin-top:14px;
       font-size:12px;
+      line-height:1.75;
       color:var(--muted);
-      line-height:1.7;
     }
 
-    .loading,
-    .empty{
-      min-height:360px;
+    .empty,
+    .loading{
+      min-height:480px;
       display:flex;
+      flex-direction:column;
       align-items:center;
       justify-content:center;
-      flex-direction:column;
-      color:var(--muted);
       text-align:center;
-      padding:28px;
+      color:var(--muted);
+      padding:24px;
     }
 
     .loading .pulse{
       width:48px;
       height:48px;
       border-radius:50%;
-      border:3px solid rgba(90,167,255,.15);
+      border:3px solid rgba(106,181,255,.18);
       border-top-color:var(--accent);
       animation:spin 1s linear infinite;
       margin-bottom:14px;
@@ -304,80 +341,94 @@
     }
 
     .quote-box{
-      background:linear-gradient(180deg,#16233a 0%, #10182a 100%);
-      border:1px solid var(--line);
-      border-radius:18px;
+      position:relative;
+      background:linear-gradient(180deg, rgba(37,57,94,.58), rgba(17,26,44,.82));
+      border:1px solid var(--line-strong);
+      border-radius:20px;
       padding:18px;
+      overflow:hidden;
       margin-bottom:14px;
     }
 
+    .quote-box::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:url("./IMG_1270.jpeg") center center / 220px auto no-repeat;
+      opacity:.05;
+      pointer-events:none;
+    }
+
+    .tag{
+      position:relative;
+      z-index:1;
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,209,92,.12);
+      border:1px solid rgba(255,209,92,.26);
+      color:var(--hot);
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
     .quote-top{
+      position:relative;
+      z-index:1;
       display:flex;
       justify-content:space-between;
-      align-items:flex-start;
       gap:12px;
       margin-bottom:14px;
     }
 
-    .tag{
-      display:inline-block;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-      background:rgba(255,184,77,.1);
-      border:1px solid rgba(255,184,77,.24);
-      color:var(--hot);
-      margin-bottom:10px;
-    }
-
     .quote-stock{
-      font-size:28px;
+      font-size:42px;
       font-weight:900;
       line-height:1;
       margin-bottom:8px;
     }
 
     .quote-name{
-      font-size:17px;
-      font-weight:700;
-      color:var(--text);
-      word-break:break-word;
+      font-size:18px;
+      font-weight:800;
     }
 
     .quote-volume{
       text-align:right;
-      min-width:110px;
+      min-width:120px;
     }
 
     .quote-volume .k{
-      font-size:12px;
       color:var(--muted);
-      margin-bottom:6px;
+      font-size:12px;
+      margin-bottom:8px;
     }
 
     .quote-volume .v{
-      font-size:30px;
-      font-weight:900;
+      font-size:42px;
+      line-height:1;
       color:var(--hot);
-      letter-spacing:.02em;
+      font-weight:900;
     }
 
     .metric-grid{
+      position:relative;
+      z-index:1;
       display:grid;
       grid-template-columns:repeat(3,1fr);
       gap:10px;
     }
 
-    @media (max-width: 560px){
-      .metric-grid{
-        grid-template-columns:1fr;
-      }
+    @media (max-width: 620px){
+      .metric-grid{grid-template-columns:1fr}
+      .quote-top{flex-direction:column}
+      .quote-volume{text-align:left}
     }
 
     .metric{
-      background:rgba(255,255,255,.02);
-      border:1px solid var(--line);
+      background:rgba(94,132,214,.10);
+      border:1px solid rgba(132,166,255,.16);
       border-radius:14px;
       padding:12px;
     }
@@ -390,7 +441,7 @@
 
     .metric .v{
       font-size:17px;
-      font-weight:800;
+      font-weight:900;
       word-break:break-word;
     }
 
@@ -404,8 +455,9 @@
     .section-title h3{
       margin:0;
       font-size:15px;
+      color:var(--text);
+      font-weight:800;
       letter-spacing:.06em;
-      color:var(--muted);
       text-transform:uppercase;
     }
 
@@ -415,25 +467,24 @@
     }
 
     .row{
-      background:var(--panel-2);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
+      background:linear-gradient(180deg, rgba(49,74,122,.44), rgba(23,34,58,.88));
+      border:1px solid rgba(132,166,255,.16);
+      border-radius:18px;
+      padding:16px;
       display:flex;
-      justify-content:space-between;
       align-items:center;
+      justify-content:space-between;
       gap:12px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
     }
 
-    .row-left{
-      min-width:0;
-    }
+    .row-left{min-width:0}
 
     .rank{
+      color:var(--accent2);
       font-size:12px;
-      color:var(--accent-2);
-      margin-bottom:4px;
-      font-weight:700;
+      font-weight:800;
+      margin-bottom:5px;
     }
 
     .code{
@@ -445,43 +496,56 @@
     .sub{
       font-size:12px;
       color:var(--muted);
-      margin-top:5px;
+      margin-top:4px;
     }
 
     .vol{
-      white-space:nowrap;
       text-align:right;
+      white-space:nowrap;
     }
 
     .vol .k{
-      font-size:11px;
       color:var(--muted);
-      margin-bottom:5px;
+      font-size:11px;
+      margin-bottom:6px;
     }
 
     .vol .v{
       font-size:20px;
       font-weight:900;
-      color:var(--text);
     }
   </style>
 </head>
 <body>
+  <div class="fx">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="money">
+    <i>💵</i>
+    <i>🪙</i>
+    <i>💴</i>
+    <i>🪙</i>
+    <i>💵</i>
+    <i>🪙</i>
+  </div>
+
   <div class="wrap">
     <div class="topbar">
       <div class="brand">
         <img
-          src="mino-cat.png"
+          src="./IMG_1270.jpeg"
           alt="Mino Logo"
           class="brand-logo"
-          onerror="this.style.display='none'; document.getElementById('fallbackBadge').style.display='flex';"
+          onerror="this.style.display='none';document.getElementById('fallbackBadge').style.display='flex';"
         >
-        <div id="fallbackBadge" class="brand-badge">貓</div>
+        <div id="fallbackBadge" class="brand-fallback">貓</div>
         <div>
           <h1 class="brand-title">貓市報告</h1>
           <p class="brand-sub">Mino Warrant Terminal</p>
         </div>
       </div>
+
       <div class="status-chip">Render API 已連線</div>
     </div>
 
@@ -505,7 +569,7 @@
           <div class="footer-note">
             ① 目前畫面已接上你的 Render API。<br>
             ② 若免費方案休眠，第一次查詢可能會稍慢。<br>
-            ③ 畫面含品牌浮水印與 Mino 視覺識別。
+            ③ 畫面含 Mino 品牌浮水印與視覺識別。
           </div>
         </div>
       </div>
@@ -517,8 +581,8 @@
         </div>
         <div class="card-body" id="resultWrap">
           <div class="empty">
-            <div style="font-size:42px;margin-bottom:10px;">📈</div>
-            <div style="font-weight:800;font-size:18px;margin-bottom:6px;">等待查詢</div>
+            <div style="font-size:44px;margin-bottom:12px;">📈</div>
+            <div style="font-size:18px;font-weight:900;margin-bottom:8px;color:var(--text);">等待查詢</div>
             <div>輸入股票代號後，按下「查詢」即可顯示最熱門權證與前 3 檔。</div>
           </div>
         </div>
@@ -543,11 +607,12 @@
       msg.className = "msg";
       msg.innerText = "查詢中…";
       btn.disabled = true;
+      btn.innerText = "查詢中...";
 
       resultWrap.innerHTML = `
         <div class="loading">
           <div class="pulse"></div>
-          <div style="font-weight:800;margin-bottom:6px;">查詢中</div>
+          <div style="font-size:18px;font-weight:900;color:var(--text);margin-bottom:8px;">查詢中</div>
           <div>若 Render 正在喚醒，第一次可能會慢一點。</div>
         </div>
       `;
@@ -559,6 +624,8 @@
         if(!res.ok || !data.top){
           throw new Error("查詢失敗");
         }
+
+        const now = new Date().toLocaleString("zh-TW");
 
         const top3Html = (data.top3 || []).map(function(x, idx){
           return `
@@ -600,8 +667,8 @@
                 <div class="v">${data.top.code}</div>
               </div>
               <div class="metric">
-                <div class="k">資料狀態</div>
-                <div class="v">API 已回應</div>
+                <div class="k">查詢時間</div>
+                <div class="v">${now}</div>
               </div>
             </div>
           </div>
@@ -623,12 +690,13 @@
         resultWrap.innerHTML = `
           <div class="empty">
             <div style="font-size:42px;margin-bottom:10px;">⚠️</div>
-            <div style="font-weight:800;font-size:18px;margin-bottom:6px;">查詢失敗</div>
+            <div style="font-weight:900;font-size:18px;margin-bottom:6px;color:var(--text);">查詢失敗</div>
             <div>可能是 Render 尚未喚醒，或 API 暫時沒有回應。</div>
           </div>
         `;
       }finally{
         btn.disabled = false;
+        btn.innerText = "查詢";
       }
     }
   </script>
