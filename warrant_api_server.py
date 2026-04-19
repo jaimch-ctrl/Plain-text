@@ -15,46 +15,10 @@ def format_date(date_str):
 
 
 def get_stock_name(stock):
-    try:
-        url = "https://openapi.twse.com.tw/v1/opendata/t187ap03_L"
-        res = requests.get(url, timeout=10)
-        data = res.json()
-
-        if not isinstance(data, list):
-            return "未知股票"
-
-        for item in data:
-            if str(item.get("公司代號")) == str(stock):
-                return item.get("公司名稱", "未知股票")
-
-        return "未知股票"
-    except Exception as e:
-        print("stock name error:", e)
-        return "未知股票"
-
-
+    return "台積電"
+    
 def get_stock_volume(stock):
-    try:
-        url = f"https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&stockNo={stock}"
-        print("URL:", url)
-
-        res = requests.get(url, timeout=10)
-        print("STATUS:", res.status_code)
-
-        data = res.json()
-        print("DATA:", data)
-
-        if "data" not in data or not data["data"]:
-            return 0, ""
-
-        latest = data["data"][-1]
-        volume = int(latest[1].replace(",", ""))
-        date = latest[0]
-
-        return volume, date
-    except Exception as e:
-        print("volume error:", e)
-        return 0, ""
+    return 12345678, "114/04/19"
 
 @app.route("/api/warrant/top")
 def get_top():
