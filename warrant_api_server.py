@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
+import json
 from flask_cors import CORS
 import requests
 from datetime import datetime
@@ -75,14 +76,19 @@ def get_top():
         {"code": "055222", "volume": int(volume * 0.5)}
     ]
 
-    return jsonify({
-        "stock": stock,
-        "stock_name": stock_name,
-        "volume": volume,
-        "date": date,
-        "top": top,
-        "top3": top3
-    })
+result = {
+    "stock": stock,
+    "stock_name": stock_name,
+    "volume": volume,
+    "date": date,
+    "top": top,
+    "top3": top3
+}
+
+return Response(
+    json.dumps(result, ensure_ascii=False),
+    content_type="application/json; charset=utf-8"
+)
 
 # ===== 啟動 =====
 
