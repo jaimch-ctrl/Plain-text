@@ -446,12 +446,12 @@
       };
     }
 
-    function openYahoo(){
-      const payload = validateInput();
-      if(!payload) return;
+   function openHiStockWarrant(){
+  const payload = validateInput();
+  if(!payload) return;
 
-      window.open(`https://tw.stock.yahoo.com/quote/${payload.stock}`, "_blank");
-    }
+  window.open(`https://histock.tw/stock/warrant.aspx?no=${payload.stock}`, "_blank");
+}
 
     function openGoogleWarrant(){
       const payload = validateInput();
