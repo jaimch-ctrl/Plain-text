@@ -89,7 +89,7 @@ return Response(
     json.dumps(result, ensure_ascii=False),
     content_type="application/json; charset=utf-8"
 )
-
+fix json encoding
 # ===== 啟動 =====
 
 if __name__ == "__main__":
