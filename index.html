@@ -3,149 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>貓市報告｜Mino Warrant Terminal</title>
+  <title>貓市報告｜日期快查版</title>
   <style>
     :root{
       --bg:#0a1020;
-      --panel:rgba(17,25,43,.82);
-      --panel-strong:rgba(20,30,52,.92);
-      --panel-soft:rgba(30,43,71,.72);
+      --panel:rgba(17,25,43,.84);
       --line:rgba(132,166,255,.16);
-      --line-strong:rgba(132,166,255,.24);
       --text:#edf4ff;
       --muted:#9fb0d2;
       --accent:#69b4ff;
       --accent2:#7bf0d0;
-      --hot:#ffd15c;
-      --danger:#ff7c7c;
       --shadow:0 18px 40px rgba(0,0,0,.32);
-      --radius:22px;
     }
 
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0}
 
     body{
+      margin:0;
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
-      color:var(--text);
-      min-height:100vh;
-      overflow-x:hidden;
       background:
         radial-gradient(circle at 15% 15%, rgba(88,170,255,.14), transparent 20%),
         radial-gradient(circle at 85% 12%, rgba(115,240,210,.08), transparent 18%),
         linear-gradient(180deg,#08101d 0%, #0d1525 100%);
-      position:relative;
-      -webkit-user-select:none;
-      user-select:none;
-      -webkit-touch-callout:none;
-    }
-
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:
-        linear-gradient(rgba(8,12,23,.40), rgba(8,12,23,.55)),
-        url("./IMG_1270.jpeg") 68% 52% / 340px auto no-repeat;
-      opacity:.045;
-      pointer-events:none;
-      z-index:0;
-    }
-
-    body::after{
-      content:"Jean × Mino Internal";
-      position:fixed;
-      right:22px;
-      bottom:14px;
-      color:rgba(255,255,255,.09);
-      font-size:14px;
-      font-weight:600;
-      letter-spacing:.08em;
-      pointer-events:none;
-      z-index:1;
-      white-space:nowrap;
-    }
-
-    .fx{
-      position:fixed;
-      inset:0;
-      overflow:hidden;
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .fx span{
-      position:absolute;
-      display:block;
-      border-radius:999px;
-      background:radial-gradient(circle, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 70%);
-      animation:floatUp linear infinite;
-      opacity:.22;
-      filter:blur(.3px);
-    }
-
-    .fx span:nth-child(1){width:180px;height:180px;left:8%;top:82%;animation-duration:18s}
-    .fx span:nth-child(2){width:90px;height:90px;left:22%;top:68%;animation-duration:13s}
-    .fx span:nth-child(3){width:140px;height:140px;left:48%;top:86%;animation-duration:21s}
-    .fx span:nth-child(4){width:70px;height:70px;left:72%;top:80%;animation-duration:15s}
-    .fx span:nth-child(5){width:120px;height:120px;left:86%;top:76%;animation-duration:17s}
-    .fx span:nth-child(6){width:60px;height:60px;left:60%;top:65%;animation-duration:12s}
-
-    @keyframes floatUp{
-      0%{transform:translateY(0) scale(1);opacity:.10}
-      30%{opacity:.20}
-      100%{transform:translateY(-120px) scale(1.06);opacity:0}
-    }
-
-    .money{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:0;
-      overflow:hidden;
-    }
-
-    .money i{
-      position:absolute;
-      opacity:.08;
-      animation:drift 18s ease-in-out infinite alternate;
-      font-style:normal;
-      user-select:none;
-    }
-
-    .money i:nth-child(1){left:10%;top:22%;font-size:84px;transform:rotate(-18deg)}
-    .money i:nth-child(2){left:74%;top:16%;font-size:62px;transform:rotate(15deg)}
-    .money i:nth-child(3){left:80%;top:68%;font-size:88px;transform:rotate(-12deg)}
-    .money i:nth-child(4){left:20%;top:74%;font-size:66px;transform:rotate(11deg)}
-    .money i:nth-child(5){left:48%;top:14%;font-size:56px;transform:rotate(8deg)}
-    .money i:nth-child(6){left:58%;top:76%;font-size:54px;transform:rotate(-10deg)}
-
-    @keyframes drift{
-      from{transform:translateY(0) rotate(-8deg)}
-      to{transform:translateY(-18px) rotate(8deg)}
+      color:var(--text);
+      min-height:100vh;
     }
 
     .wrap{
-      position:relative;
-      z-index:2;
-      max-width:1280px;
+      max-width:960px;
       margin:0 auto;
-      padding:22px 16px 34px;
+      padding:24px 16px 40px;
     }
 
     .topbar{
       display:flex;
-      justify-content:space-between;
       align-items:center;
+      justify-content:space-between;
       gap:12px;
-      margin-bottom:16px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
     }
 
     .brand{
       display:flex;
       align-items:center;
       gap:12px;
-      min-width:0;
     }
 
     .brand-logo{
@@ -156,28 +58,12 @@
       border:2px solid rgba(255,255,255,.18);
       box-shadow:var(--shadow);
       background:#111827;
-      flex-shrink:0;
-    }
-
-    .brand-fallback{
-      width:58px;
-      height:58px;
-      border-radius:50%;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      color:#07111f;
-      font-weight:900;
-      box-shadow:var(--shadow);
-      flex-shrink:0;
     }
 
     .brand-title{
       margin:0;
       font-size:24px;
       font-weight:900;
-      letter-spacing:.02em;
     }
 
     .brand-sub{
@@ -186,39 +72,13 @@
       color:var(--muted);
     }
 
-    .status-chip{
-      padding:10px 14px;
-      border-radius:999px;
-      background:rgba(84,238,193,.08);
-      border:1px solid rgba(84,238,193,.24);
-      color:var(--accent2);
-      font-size:13px;
-      font-weight:700;
-      white-space:nowrap;
-      flex-shrink:0;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:360px 1fr;
-      gap:16px;
-      align-items:start;
-    }
-
-    @media (max-width: 920px){
-      .grid{grid-template-columns:1fr}
-      .topbar{flex-direction:column;align-items:flex-start}
-      body::before{background-size:300px auto}
-      body::after{font-size:14px;right:14px;bottom:12px}
-    }
-
     .card{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:var(--radius);
+      border-radius:22px;
       box-shadow:var(--shadow);
-      backdrop-filter:blur(10px);
       overflow:hidden;
+      margin-bottom:16px;
     }
 
     .card-head{
@@ -232,17 +92,8 @@
     .card-title{
       margin:0;
       font-size:14px;
-      color:var(--text);
       font-weight:800;
       letter-spacing:.06em;
-    }
-
-    .dot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:var(--accent2);
-      box-shadow:0 0 16px rgba(123,240,208,.65);
     }
 
     .card-body{
@@ -266,68 +117,69 @@
       background:rgba(74,114,198,.16);
       border:1px solid rgba(127,173,255,.15);
       color:var(--text);
-      font-size:16px;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+      font-size:18px;
     }
 
-    .input::placeholder{
-      color:rgba(237,244,255,.42);
+    .date-row{
+      display:grid;
+      grid-template-columns:1fr auto auto auto auto;
+      gap:8px;
+      margin-bottom:14px;
     }
 
-    .input:focus{
-      border-color:rgba(106,181,255,.45);
-      box-shadow:0 0 0 3px rgba(90,167,255,.12);
+    @media (max-width: 760px){
+      .date-row{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    .quick-btn{
+      border:none;
+      border-radius:12px;
+      padding:12px 10px;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .btn-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    @media (max-width: 760px){
+      .btn-grid{
+        grid-template-columns:1fr;
+      }
     }
 
     .btn{
-      width:100%;
       border:none;
       border-radius:14px;
-      padding:16px 14px;
-      font-size:17px;
+      padding:15px 14px;
+      font-size:15px;
       font-weight:900;
-      color:#09111d;
       cursor:pointer;
+      color:#09111d;
       background:linear-gradient(90deg,var(--accent),var(--accent2));
       box-shadow:0 12px 26px rgba(80,164,255,.22);
-      transition:.18s ease;
-      margin-bottom:10px;
     }
 
-    .btn:hover{filter:brightness(1.03)}
-    .btn:active{transform:scale(.99)}
-    .btn:disabled{opacity:.68;cursor:not-allowed}
-
     .subbtn{
-      width:100%;
       border:none;
       border-radius:12px;
       padding:12px 12px;
       font-size:14px;
       font-weight:800;
       cursor:pointer;
-      margin-bottom:10px;
       color:var(--text);
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
-    }
-
-    .subbtn:active{transform:scale(.99)}
-
-    .msg{
-      margin-top:12px;
-      min-height:22px;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .msg.error{color:var(--danger)}
-
-    .footer-note{
-      margin-top:14px;
-      font-size:12px;
-      line-height:1.75;
-      color:var(--muted);
+      margin-top:10px;
     }
 
     .fav-box{
@@ -368,311 +220,72 @@
       font-size:12px;
     }
 
-    .loading,
-    .empty{
-      min-height:480px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      color:var(--muted);
-      padding:24px;
-    }
-
-    .loading .pulse{
-      width:48px;
-      height:48px;
-      border-radius:50%;
-      border:3px solid rgba(106,181,255,.18);
-      border-top-color:var(--accent);
-      animation:spin 1s linear infinite;
-      margin-bottom:14px;
-    }
-
-    @keyframes spin{
-      to{transform:rotate(360deg)}
-    }
-
-    .result-watermark{
-      position:relative;
-      overflow:hidden;
-    }
-
-    .result-watermark::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:url("./IMG_1270.jpeg") center center / 520px auto no-repeat;
-      opacity:.06;
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .result-watermark > *{
-      position:relative;
-      z-index:1;
-    }
-
-    .quote-box{
-      position:relative;
-      background:linear-gradient(180deg, rgba(37,57,94,.58), rgba(17,26,44,.82));
-      border:1px solid var(--line-strong);
-      border-radius:20px;
-      padding:18px;
-      overflow:hidden;
-      margin-bottom:14px;
-    }
-
-    .tag{
-      display:inline-block;
-      padding:6px 10px;
-      border-radius:999px;
-      background:rgba(255,209,92,.12);
-      border:1px solid rgba(255,209,92,.26);
-      color:var(--hot);
+    .helper{
+      margin-top:12px;
       font-size:12px;
-      font-weight:800;
-      margin-bottom:10px;
+      color:var(--muted);
+      line-height:1.8;
     }
 
-    .quote-top{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
-    }
-
-    .quote-stock{
-      font-size:42px;
-      font-weight:900;
-      line-height:1;
-      margin-bottom:8px;
-    }
-
-    .quote-name{
-      font-size:18px;
-      font-weight:800;
-      margin-bottom:4px;
-    }
-
-    .quote-subname{
+    .msg{
+      margin-top:12px;
+      min-height:20px;
       font-size:13px;
       color:var(--muted);
-    }
-
-    .quote-volume{
-      text-align:right;
-      min-width:120px;
-    }
-
-    .quote-volume .k{
-      color:var(--muted);
-      font-size:12px;
-      margin-bottom:8px;
-    }
-
-    .quote-volume .v{
-      font-size:42px;
-      line-height:1;
-      color:var(--hot);
-      font-weight:900;
-    }
-
-    .metric-grid{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:10px;
-    }
-
-    @media (max-width: 760px){
-      .metric-grid{grid-template-columns:1fr 1fr}
-      .quote-top{flex-direction:column}
-      .quote-volume{text-align:left}
-    }
-
-    .metric{
-      background:rgba(94,132,214,.10);
-      border:1px solid rgba(132,166,255,.16);
-      border-radius:14px;
-      padding:12px;
-    }
-
-    .metric .k{
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
-
-    .metric .v{
-      font-size:17px;
-      font-weight:900;
-      word-break:break-word;
-    }
-
-    .section-title{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin:18px 0 10px;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .section-title h3{
-      margin:0;
-      font-size:15px;
-      color:var(--text);
-      font-weight:800;
-      letter-spacing:.06em;
-      text-transform:uppercase;
-    }
-
-    .copy-btn{
-      border:none;
-      border-radius:10px;
-      padding:8px 12px;
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      font-size:13px;
-      font-weight:800;
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .list{
-      display:grid;
-      gap:10px;
-    }
-
-    .row{
-      background:linear-gradient(180deg, rgba(49,74,122,.44), rgba(23,34,58,.88));
-      border:1px solid rgba(132,166,255,.16);
-      border-radius:18px;
-      padding:16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
-    }
-
-    .row-left{min-width:0}
-
-    .rank{
-      color:var(--accent2);
-      font-size:12px;
-      font-weight:800;
-      margin-bottom:5px;
-    }
-
-    .code{
-      font-size:20px;
-      font-weight:900;
-      line-height:1.1;
-    }
-
-    .sub{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:4px;
-    }
-
-    .vol{
-      text-align:right;
-      white-space:nowrap;
-    }
-
-    .vol .k{
-      color:var(--muted);
-      font-size:11px;
-      margin-bottom:6px;
-    }
-
-    .vol .v{
-      font-size:20px;
-      font-weight:900;
     }
   </style>
 </head>
 <body>
-  <div class="fx">
-    <span></span><span></span><span></span><span></span><span></span><span></span>
-  </div>
-
-  <div class="money">
-    <i>💵</i>
-    <i>🪙</i>
-    <i>💴</i>
-    <i>🪙</i>
-    <i>💵</i>
-    <i>🪙</i>
-  </div>
-
   <div class="wrap">
     <div class="topbar">
       <div class="brand">
-        <img
-          src="./IMG_1270.jpeg"
-          alt="Mino Logo"
-          class="brand-logo"
-          onerror="this.style.display='none';document.getElementById('fallbackBadge').style.display='flex';"
-        >
-        <div id="fallbackBadge" class="brand-fallback">貓</div>
+        <img src="./IMG_1270.jpeg" class="brand-logo" alt="Mino">
         <div>
           <h1 class="brand-title">貓市報告</h1>
-          <p class="brand-sub">Mino Warrant Terminal</p>
+          <p class="brand-sub">日期快查版｜輸入代碼直接導流</p>
         </div>
       </div>
-
-      <div class="status-chip">Render API 已連線</div>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <div class="card-head">
-          <h2 class="card-title">查詢面板</h2>
-          <div class="dot"></div>
-        </div>
-        <div class="card-body">
-          <label for="api">API 來源</label>
-          <input id="api" class="input" value="https://plain-text.onrender.com">
-
-          <label for="stock">股票代號</label>
-          <input id="stock" class="input" placeholder="例如 2454" inputmode="numeric">
-
-          <button id="runBtn" class="btn" onclick="run()">查詢</button>
-          <button class="subbtn" onclick="saveFavorite()">收藏目前代號</button>
-
-          <div id="msg" class="msg"></div>
-
-          <div class="fav-box">
-            <div class="fav-title">常用代號收藏</div>
-            <div id="favList" class="fav-list">
-              <div class="fav-empty">目前尚未收藏</div>
-            </div>
-          </div>
-
-          <div class="footer-note">
-            ① 目前畫面已接上你的 Render API。<br>
-            ② 若免費方案休眠，第一次查詢可能會稍慢。<br>
-            ③ 畫面含 Mino 品牌浮水印與視覺識別。<br>
-            ④ 本頁已限制一般複製行為，但無法百分之百防止轉傳。
-          </div>
-        </div>
+    <div class="card">
+      <div class="card-head">
+        <h2 class="card-title">代碼＋日期查找</h2>
       </div>
+      <div class="card-body">
+        <label for="stock">股票代號</label>
+        <input id="stock" class="input" placeholder="例如 2454" inputmode="numeric">
 
-      <div class="card">
-        <div class="card-head">
-          <h2 class="card-title">查詢結果</h2>
-          <div class="dot"></div>
+        <label for="queryDate">查詢日期</label>
+        <div class="date-row">
+          <input id="queryDate" class="input" type="date" style="margin-bottom:0;">
+          <button class="quick-btn" onclick="setToday()">今天</button>
+          <button class="quick-btn" onclick="setOffset(-1)">昨天</button>
+          <button class="quick-btn" onclick="setOffset(-3)">前3天</button>
+          <button class="quick-btn" onclick="setOffset(-5)">前5天</button>
         </div>
-        <div class="card-body result-watermark" id="resultWrap">
-          <div class="empty">
-            <div style="font-size:44px;margin-bottom:12px;">📈</div>
-            <div style="font-size:18px;font-weight:900;margin-bottom:8px;color:var(--text);">等待查詢</div>
-            <div>輸入股票代號後，按下「查詢」即可顯示最熱門權證與前 3 檔。</div>
+
+        <div class="btn-grid">
+          <button class="btn" onclick="openYahoo()">開 Yahoo 股票頁</button>
+          <button class="btn" onclick="openGoogleWarrant()">Google 搜尋該日期權證排行</button>
+          <button class="btn" onclick="openGoogleBroker()">Google 搜尋該日期券商權證頁</button>
+          <button class="btn" onclick="copyCode()">一鍵複製代碼</button>
+        </div>
+
+        <button class="subbtn" onclick="saveFavorite()">收藏目前代號</button>
+
+        <div id="msg" class="msg"></div>
+
+        <div class="fav-box">
+          <div class="fav-title">常用代號收藏</div>
+          <div id="favList" class="fav-list">
+            <div class="fav-empty">目前尚未收藏</div>
           </div>
+        </div>
+
+        <div class="helper">
+          ① 這版不再抓外部排行資料，所以穩定很多。<br>
+          ② 你可以往前切日期，讓搜尋結果更接近你要找的那一天。<br>
+          ③ 如果你之後固定只用某個網站，我再把按鈕改成直接跳那一站。
         </div>
       </div>
     </div>
@@ -680,13 +293,70 @@
 
   <script>
     const STOCK_KEY = "mino_last_stock";
+    const DATE_KEY = "mino_last_date";
     const FAV_KEY = "mino_favorites";
 
-    function loadLastStock(){
+    function getStock(){
+      return document.getElementById("stock").value.trim();
+    }
+
+    function getDate(){
+      return document.getElementById("queryDate").value.trim();
+    }
+
+    function setMsg(text){
+      document.getElementById("msg").innerText = text;
+    }
+
+    function saveLastStock(stock){
+      localStorage.setItem(STOCK_KEY, stock);
+    }
+
+    function saveLastDate(dateStr){
+      localStorage.setItem(DATE_KEY, dateStr);
+    }
+
+    function loadLastState(){
       const lastStock = localStorage.getItem(STOCK_KEY);
+      const lastDate = localStorage.getItem(DATE_KEY);
+
       if(lastStock){
         document.getElementById("stock").value = lastStock;
       }
+
+      if(lastDate){
+        document.getElementById("queryDate").value = lastDate;
+      }else{
+        setToday();
+      }
+    }
+
+    function formatDateForSearch(dateStr){
+      if(!dateStr) return "";
+      return dateStr.replaceAll("-", "/");
+    }
+
+    function setToday(){
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+      const dd = String(now.getDate()).padStart(2, "0");
+      const val = `${yyyy}-${mm}-${dd}`;
+      document.getElementById("queryDate").value = val;
+      saveLastDate(val);
+      setMsg("已切換為今天");
+    }
+
+    function setOffset(days){
+      const now = new Date();
+      now.setDate(now.getDate() + days);
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+      const dd = String(now.getDate()).padStart(2, "0");
+      const val = `${yyyy}-${mm}-${dd}`;
+      document.getElementById("queryDate").value = val;
+      saveLastDate(val);
+      setMsg(`已切換日期：${formatDateForSearch(val)}`);
     }
 
     function getFavorites(){
@@ -710,20 +380,21 @@
         return;
       }
 
-      favList.innerHTML = list.map(function(code){
-        return '<button class="fav-chip" onclick="useFavorite(\'' + code + '\')">' + code + '</button>';
-      }).join("");
+      favList.innerHTML = list.map(code =>
+        `<button class="fav-chip" onclick="useFavorite('${code}')">${code}</button>`
+      ).join("");
     }
 
     function useFavorite(code){
       document.getElementById("stock").value = code;
-      localStorage.setItem(STOCK_KEY, code);
+      saveLastStock(code);
+      setMsg("已帶入代號：" + code);
     }
 
     function saveFavorite(){
-      const stock = document.getElementById("stock").value.trim();
+      const stock = getStock();
       if(!stock){
-        alert("請先輸入股票代號。");
+        setMsg("請先輸入股票代號。");
         return;
       }
 
@@ -734,157 +405,73 @@
       list = list.slice(0, 12);
       setFavorites(list);
       renderFavorites();
-      document.getElementById("msg").innerText = "已收藏代號：" + stock;
+      saveLastStock(stock);
+      setMsg("已收藏代號：" + stock);
     }
 
-    async function copyTopCode(code){
-      try{
-        await navigator.clipboard.writeText(code);
-        document.getElementById("msg").innerText = "已複製熱門權證代碼：" + code;
-      }catch(e){
-        document.getElementById("msg").innerText = "複製失敗，請手動複製。";
-      }
-    }
-
-    async function run(){
-      const api = document.getElementById('api').value.trim();
-      const stock = document.getElementById('stock').value.trim();
-      const resultWrap = document.getElementById('resultWrap');
-      const msg = document.getElementById('msg');
-      const btn = document.getElementById('runBtn');
-
+    function copyCode(){
+      const stock = getStock();
       if(!stock){
-        msg.className = "msg error";
-        msg.innerText = "請先輸入股票代號。";
+        setMsg("請先輸入股票代號。");
         return;
       }
+      navigator.clipboard.writeText(stock).then(() => {
+        setMsg("已複製代號：" + stock);
+      }).catch(() => {
+        setMsg("複製失敗，請手動複製。");
+      });
+    }
 
-      localStorage.setItem(STOCK_KEY, stock);
+    function validateInput(){
+      const stock = getStock();
+      const dateStr = getDate();
 
-      msg.className = "msg";
-      msg.innerText = "查詢中…";
-      btn.disabled = true;
-      btn.innerText = "查詢中...";
-
-      resultWrap.innerHTML = `
-        <div class="loading">
-          <div class="pulse"></div>
-          <div style="font-size:18px;font-weight:900;color:var(--text);margin-bottom:8px;">查詢中</div>
-          <div>若 Render 正在喚醒，第一次可能會慢一點。</div>
-        </div>
-      `;
-
-      try{
-        const res = await fetch(api + "/api/warrant/top?stock=" + stock + "&t=" + Date.now());
-        const data = await res.json();
-
-        if(!res.ok || !data.top){
-          throw new Error("查詢失敗");
-        }
-
-        const now = new Date().toLocaleString("zh-TW")
-const stockName = data.stock_name || "未提供名稱"
-const topCode = data.top.code || ""
-
-        const top3Html = (data.top3 || []).map(function(x, idx){
-          return `
-            <div class="row">
-              <div class="row-left">
-                <div class="rank">TOP ${idx + 1}</div>
-                <div class="code">${x.code}</div>
-                <div class="sub">權證代碼</div>
-              </div>
-              <div class="vol">
-                <div class="k">成交量</div>
-                <div class="v">${Number(x.volume || 0).toLocaleString()}</div>
-              </div>
-            </div>
-          `;
-        }).join("");
-
-        resultWrap.innerHTML = `
-          <div class="quote-box">
-            <div class="tag">最高成交量</div>
-            <div class="quote-top">
-              <div>
-                <div class="quote-stock">${data.stock}</div>
-                <div class="quote-name">${topCode}</div>
-                <div class="quote-subname">${stockName}</div>
-              </div>
-              <div class="quote-volume">
-                <div class="k">成交量</div>
-                <div class="v">${Number(data.top.volume || 0).toLocaleString()}</div>
-              </div>
-            </div>
-
-            <div class="metric-grid">
-              <div class="metric">
-                <div class="k">股票代號</div>
-                <div class="v">${data.stock}</div>
-              </div>
-              <div class="metric">
-                <div class="k">股票名稱</div>
-                <div class="v">${stockName}</div>
-              </div>
-              <div class="metric">
-                <div class="k">最熱門代碼</div>
-                <div class="v">${topCode}</div>
-              </div>
-              <div class="metric">
-                <div class="k">查詢時間</div>
-                <div class="v">${now}</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section-title">
-            <h3>Top 3 權證</h3>
-            <button class="copy-btn" onclick="copyTopCode('${topCode}')">一鍵複製熱門權證代碼</button>
-          </div>
-
-          <div class="list">
-            ${top3Html}
-          </div>
-        `;
-
-        msg.className = "msg";
-        msg.innerText = "查詢完成。";
-      }catch(e){
-        msg.className = "msg error";
-        msg.innerText = "查詢失敗，請稍後再試。";
-        resultWrap.innerHTML = `
-          <div class="empty">
-            <div style="font-size:42px;margin-bottom:10px;">⚠️</div>
-            <div style="font-weight:900;font-size:18px;margin-bottom:6px;color:var(--text);">查詢失敗</div>
-            <div>可能是 Render 尚未喚醒，或 API 暫時沒有回應。</div>
-          </div>
-        `;
-      }finally{
-        btn.disabled = false;
-        btn.innerText = "查詢";
+      if(!stock){
+        setMsg("請先輸入股票代號。");
+        return null;
       }
+
+      if(!dateStr){
+        setMsg("請先選擇日期。");
+        return null;
+      }
+
+      saveLastStock(stock);
+      saveLastDate(dateStr);
+
+      return {
+        stock,
+        dateStr,
+        searchDate: formatDateForSearch(dateStr)
+      };
+    }
+
+    function openYahoo(){
+      const payload = validateInput();
+      if(!payload) return;
+
+      window.open(`https://tw.stock.yahoo.com/quote/${payload.stock}`, "_blank");
+    }
+
+    function openGoogleWarrant(){
+      const payload = validateInput();
+      if(!payload) return;
+
+      const q = encodeURIComponent(`${payload.stock} 權證 成交量 排行 ${payload.searchDate}`);
+      window.open(`https://www.google.com/search?q=${q}`, "_blank");
+    }
+
+    function openGoogleBroker(){
+      const payload = validateInput();
+      if(!payload) return;
+
+      const q = encodeURIComponent(`${payload.stock} 權證 券商 ${payload.searchDate}`);
+      window.open(`https://www.google.com/search?q=${q}`, "_blank");
     }
 
     document.addEventListener("DOMContentLoaded", function(){
-      loadLastStock();
+      loadLastState();
       renderFavorites();
-    });
-
-    document.addEventListener("copy", function(e){
-      e.preventDefault();
-      document.getElementById("msg").innerText = "此頁已限制直接複製。";
-    });
-
-    document.addEventListener("contextmenu", function(e){
-      e.preventDefault();
-    });
-
-    document.addEventListener("selectstart", function(e){
-      e.preventDefault();
-    });
-
-    document.addEventListener("dragstart", function(e){
-      e.preventDefault();
     });
   </script>
 </body>
