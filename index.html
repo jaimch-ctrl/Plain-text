@@ -1,478 +1,192 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>貓市報告｜日期快查版</title>
-  <style>
-    :root{
-      --bg:#0a1020;
-      --panel:rgba(17,25,43,.84);
-      --line:rgba(132,166,255,.16);
-      --text:#edf4ff;
-      --muted:#9fb0d2;
-      --accent:#69b4ff;
-      --accent2:#7bf0d0;
-      --shadow:0 18px 40px rgba(0,0,0,.32);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>貓市報告｜快查版</title>
 
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
-      background:
-        radial-gradient(circle at 15% 15%, rgba(88,170,255,.14), transparent 20%),
-        radial-gradient(circle at 85% 12%, rgba(115,240,210,.08), transparent 18%),
-        linear-gradient(180deg,#08101d 0%, #0d1525 100%);
-      color:var(--text);
-      min-height:100vh;
-    }
-
-    .wrap{
-      max-width:960px;
-      margin:0 auto;
-      padding:24px 16px 40px;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:18px;
-      flex-wrap:wrap;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .brand-logo{
-      width:58px;
-      height:58px;
-      border-radius:50%;
-      object-fit:cover;
-      border:2px solid rgba(255,255,255,.18);
-      box-shadow:var(--shadow);
-      background:#111827;
-    }
-
-    .brand-title{
-      margin:0;
-      font-size:24px;
-      font-weight:900;
-    }
-
-    .brand-sub{
-      margin:3px 0 0;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:22px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      margin-bottom:16px;
-    }
-
-    .card-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:16px 18px;
-      border-bottom:1px solid var(--line);
-    }
-
-    .card-title{
-      margin:0;
-      font-size:14px;
-      font-weight:800;
-      letter-spacing:.06em;
-    }
-
-    .card-body{
-      padding:18px;
-    }
-
-    label{
-      display:block;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:8px;
-    }
-
-    .input{
-      width:100%;
-      border:none;
-      outline:none;
-      margin-bottom:14px;
-      padding:15px 14px;
-      border-radius:14px;
-      background:rgba(74,114,198,.16);
-      border:1px solid rgba(127,173,255,.15);
-      color:var(--text);
-      font-size:18px;
-    }
-
-    .date-row{
-      display:grid;
-      grid-template-columns:1fr auto auto auto auto;
-      gap:8px;
-      margin-bottom:14px;
-    }
-
-    @media (max-width: 760px){
-      .date-row{
-        grid-template-columns:1fr 1fr;
-      }
-    }
-
-    .quick-btn{
-      border:none;
-      border-radius:12px;
-      padding:12px 10px;
-      font-size:13px;
-      font-weight:800;
-      cursor:pointer;
-      color:var(--text);
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .btn-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    @media (max-width: 760px){
-      .btn-grid{
-        grid-template-columns:1fr;
-      }
-    }
-
-    .btn{
-      border:none;
-      border-radius:14px;
-      padding:15px 14px;
-      font-size:15px;
-      font-weight:900;
-      cursor:pointer;
-      color:#09111d;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      box-shadow:0 12px 26px rgba(80,164,255,.22);
-    }
-
-    .subbtn{
-      border:none;
-      border-radius:12px;
-      padding:12px 12px;
-      font-size:14px;
-      font-weight:800;
-      cursor:pointer;
-      color:var(--text);
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      margin-top:10px;
-    }
-
-    .fav-box{
-      margin-top:14px;
-      padding:12px;
-      border-radius:14px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.06);
-    }
-
-    .fav-title{
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:8px;
-      font-weight:700;
-    }
-
-    .fav-list{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-
-    .fav-chip{
-      border:none;
-      border-radius:999px;
-      padding:8px 12px;
-      background:rgba(105,180,255,.14);
-      color:var(--text);
-      font-size:13px;
-      font-weight:800;
-      cursor:pointer;
-      border:1px solid rgba(105,180,255,.18);
-    }
-
-    .fav-empty{
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    .helper{
-      margin-top:12px;
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.8;
-    }
-
-    .msg{
-      margin-top:12px;
-      min-height:20px;
-      font-size:13px;
-      color:var(--muted);
-    }
-  </style>
+<style>
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
+  background:#0b1220;
+  color:#fff;
+}
+.wrap{
+  max-width:720px;
+  margin:auto;
+  padding:20px;
+}
+input{
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  border-radius:10px;
+  border:none;
+  font-size:18px;
+}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:800;
+  background:#4da3ff;
+  color:#000;
+  cursor:pointer;
+}
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.small{
+  font-size:12px;
+  color:#aaa;
+  margin-top:10px;
+}
+.fav{
+  margin-top:10px;
+}
+.fav button{
+  width:auto;
+  padding:6px 10px;
+  margin:4px;
+  font-size:12px;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <img src="./IMG_1270.jpeg" class="brand-logo" alt="Mino">
-        <div>
-          <h1 class="brand-title">貓市報告</h1>
-          <p class="brand-sub">日期快查版｜輸入代碼直接導流</p>
-        </div>
-      </div>
-    </div>
 
-    <div class="card">
-      <div class="card-head">
-        <h2 class="card-title">代碼＋日期查找</h2>
-      </div>
-      <div class="card-body">
-        <label for="stock">股票代號</label>
-        <input id="stock" class="input" placeholder="例如 2454" inputmode="numeric">
+<div class="wrap">
 
-        <label for="queryDate">查詢日期</label>
-        <div class="date-row">
-          <input id="queryDate" class="input" type="date" style="margin-bottom:0;">
-          <button class="quick-btn" onclick="setToday()">今天</button>
-          <button class="quick-btn" onclick="setOffset(-1)">昨天</button>
-          <button class="quick-btn" onclick="setOffset(-3)">前3天</button>
-          <button class="quick-btn" onclick="setOffset(-5)">前5天</button>
-        </div>
+<h2>貓市報告</h2>
 
-        <div class="btn-grid">
-          <button class="btn" onclick="openYahoo()">開 Yahoo 股票頁</button>
-          <button class="btn" onclick="openGoogleWarrant()">Google 搜尋該日期權證排行</button>
-          <button class="btn" onclick="openGoogleBroker()">Google 搜尋該日期券商權證頁</button>
-          <button class="btn" onclick="copyCode()">一鍵複製代碼</button>
-        </div>
+<input id="stock" placeholder="輸入股票代號 例如 2454">
+<input id="date" type="date">
 
-        <button class="subbtn" onclick="saveFavorite()">收藏目前代號</button>
+<div class="row">
+<button onclick="setToday()">今天</button>
+<button onclick="setOffset(-1)">昨天</button>
+<button onclick="setOffset(-3)">前3天</button>
+<button onclick="setOffset(-5)">前5天</button>
+</div>
 
-        <div id="msg" class="msg"></div>
+<button onclick="openYahoo()">開 Yahoo 股票頁</button>
+<button onclick="openHiStock()">開 HiStock 權證頁</button>
+<button onclick="openGoogle()">Google 搜尋（含日期）</button>
+<button onclick="copyCode()">複製代號</button>
 
-        <div class="fav-box">
-          <div class="fav-title">常用代號收藏</div>
-          <div id="favList" class="fav-list">
-            <div class="fav-empty">目前尚未收藏</div>
-          </div>
-        </div>
+<button onclick="saveFav()">收藏代號</button>
 
-        <div class="helper">
-          ① 這版不再抓外部排行資料，所以穩定很多。<br>
-          ② 你可以往前切日期，讓搜尋結果更接近你要找的那一天。<br>
-          ③ 如果你之後固定只用某個網站，我再把按鈕改成直接跳那一站。
-        </div>
-      </div>
-    </div>
-  </div>
+<div id="fav" class="fav"></div>
 
-  <script>
-    const STOCK_KEY = "mino_last_stock";
-    const DATE_KEY = "mino_last_date";
-    const FAV_KEY = "mino_favorites";
+<div class="small">
+✔ 這版不抓資料，完全穩定<br>
+✔ 查歷史用 Google（帶日期）<br>
+✔ 看權證直接用 HiStock
+</div>
 
-    function getStock(){
-      return document.getElementById("stock").value.trim();
-    }
+</div>
 
-    function getDate(){
-      return document.getElementById("queryDate").value.trim();
-    }
+<script>
 
-    function setMsg(text){
-      document.getElementById("msg").innerText = text;
-    }
+const STOCK_KEY="stock"
+const DATE_KEY="date"
+const FAV_KEY="fav"
 
-    function saveLastStock(stock){
-      localStorage.setItem(STOCK_KEY, stock);
-    }
-
-    function saveLastDate(dateStr){
-      localStorage.setItem(DATE_KEY, dateStr);
-    }
-
-    function loadLastState(){
-      const lastStock = localStorage.getItem(STOCK_KEY);
-      const lastDate = localStorage.getItem(DATE_KEY);
-
-      if(lastStock){
-        document.getElementById("stock").value = lastStock;
-      }
-
-      if(lastDate){
-        document.getElementById("queryDate").value = lastDate;
-      }else{
-        setToday();
-      }
-    }
-
-    function formatDateForSearch(dateStr){
-      if(!dateStr) return "";
-      return dateStr.replaceAll("-", "/");
-    }
-
-    function setToday(){
-      const now = new Date();
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, "0");
-      const dd = String(now.getDate()).padStart(2, "0");
-      const val = `${yyyy}-${mm}-${dd}`;
-      document.getElementById("queryDate").value = val;
-      saveLastDate(val);
-      setMsg("已切換為今天");
-    }
-
-    function setOffset(days){
-      const now = new Date();
-      now.setDate(now.getDate() + days);
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, "0");
-      const dd = String(now.getDate()).padStart(2, "0");
-      const val = `${yyyy}-${mm}-${dd}`;
-      document.getElementById("queryDate").value = val;
-      saveLastDate(val);
-      setMsg(`已切換日期：${formatDateForSearch(val)}`);
-    }
-
-    function getFavorites(){
-      try{
-        return JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
-      }catch(e){
-        return [];
-      }
-    }
-
-    function setFavorites(list){
-      localStorage.setItem(FAV_KEY, JSON.stringify(list));
-    }
-
-    function renderFavorites(){
-      const favList = document.getElementById("favList");
-      const list = getFavorites();
-
-      if(!list.length){
-        favList.innerHTML = '<div class="fav-empty">目前尚未收藏</div>';
-        return;
-      }
-
-      favList.innerHTML = list.map(code =>
-        `<button class="fav-chip" onclick="useFavorite('${code}')">${code}</button>`
-      ).join("");
-    }
-
-    function useFavorite(code){
-      document.getElementById("stock").value = code;
-      saveLastStock(code);
-      setMsg("已帶入代號：" + code);
-    }
-
-    function saveFavorite(){
-      const stock = getStock();
-      if(!stock){
-        setMsg("請先輸入股票代號。");
-        return;
-      }
-
-      let list = getFavorites();
-      if(!list.includes(stock)){
-        list.unshift(stock);
-      }
-      list = list.slice(0, 12);
-      setFavorites(list);
-      renderFavorites();
-      saveLastStock(stock);
-      setMsg("已收藏代號：" + stock);
-    }
-
-    function copyCode(){
-      const stock = getStock();
-      if(!stock){
-        setMsg("請先輸入股票代號。");
-        return;
-      }
-      navigator.clipboard.writeText(stock).then(() => {
-        setMsg("已複製代號：" + stock);
-      }).catch(() => {
-        setMsg("複製失敗，請手動複製。");
-      });
-    }
-
-    function validateInput(){
-      const stock = getStock();
-      const dateStr = getDate();
-
-      if(!stock){
-        setMsg("請先輸入股票代號。");
-        return null;
-      }
-
-      if(!dateStr){
-        setMsg("請先選擇日期。");
-        return null;
-      }
-
-      saveLastStock(stock);
-      saveLastDate(dateStr);
-
-      return {
-        stock,
-        dateStr,
-        searchDate: formatDateForSearch(dateStr)
-      };
-    }
-
-   function openHiStockWarrant(){
-  const payload = validateInput();
-  if(!payload) return;
-
-  window.open(`https://histock.tw/stock/warrant.aspx?no=${payload.stock}`, "_blank");
+function getStock(){
+  return document.getElementById("stock").value.trim()
+}
+function getDate(){
+  return document.getElementById("date").value
 }
 
-    function openGoogleWarrant(){
-      const payload = validateInput();
-      if(!payload) return;
+function setToday(){
+  const d=new Date()
+  setDate(d)
+}
+function setOffset(n){
+  const d=new Date()
+  d.setDate(d.getDate()+n)
+  setDate(d)
+}
+function setDate(d){
+  const v=d.toISOString().split("T")[0]
+  document.getElementById("date").value=v
+  localStorage.setItem(DATE_KEY,v)
+}
 
-      const q = encodeURIComponent(`${payload.stock} 權證 成交量 排行 ${payload.searchDate}`);
-      window.open(`https://www.google.com/search?q=${q}`, "_blank");
-    }
+function openYahoo(){
+  const s=getStock()
+  if(!s)return alert("請輸入代號")
+  window.open(`https://tw.stock.yahoo.com/quote/${s}`)
+  localStorage.setItem(STOCK_KEY,s)
+}
 
-    function openGoogleBroker(){
-      const payload = validateInput();
-      if(!payload) return;
+function openHiStock(){
+  const s=getStock()
+  if(!s)return alert("請輸入代號")
+  window.open(`https://histock.tw/stock/warrant.aspx?no=${s}`)
+  localStorage.setItem(STOCK_KEY,s)
+}
 
-      const q = encodeURIComponent(`${payload.stock} 權證 券商 ${payload.searchDate}`);
-      window.open(`https://www.google.com/search?q=${q}`, "_blank");
-    }
+function openGoogle(){
+  const s=getStock()
+  const d=getDate()
+  if(!s)return alert("請輸入代號")
 
-    document.addEventListener("DOMContentLoaded", function(){
-      loadLastState();
-      renderFavorites();
-    });
-  </script>
+  const q=encodeURIComponent(`${s} 權證 成交量 排行 ${d}`)
+  window.open(`https://www.google.com/search?q=${q}`)
+  localStorage.setItem(STOCK_KEY,s)
+  if(d)localStorage.setItem(DATE_KEY,d)
+}
+
+function copyCode(){
+  const s=getStock()
+  if(!s)return
+  navigator.clipboard.writeText(s)
+  alert("已複製："+s)
+}
+
+function saveFav(){
+  const s=getStock()
+  if(!s)return
+  let list=JSON.parse(localStorage.getItem(FAV_KEY)||"[]")
+  if(!list.includes(s)) list.unshift(s)
+  localStorage.setItem(FAV_KEY,JSON.stringify(list.slice(0,10)))
+  renderFav()
+}
+
+function renderFav(){
+  const el=document.getElementById("fav")
+  let list=JSON.parse(localStorage.getItem(FAV_KEY)||"[]")
+  if(!list.length){
+    el.innerHTML="無收藏"
+    return
+  }
+  el.innerHTML=list.map(x=>`<button onclick="useFav('${x}')">${x}</button>`).join("")
+}
+
+function useFav(s){
+  document.getElementById("stock").value=s
+}
+
+function load(){
+  const s=localStorage.getItem(STOCK_KEY)
+  const d=localStorage.getItem(DATE_KEY)
+  if(s)document.getElementById("stock").value=s
+  if(d)document.getElementById("date").value=d
+  else setToday()
+  renderFav()
+}
+
+load()
+
+</script>
+
 </body>
 </html>
