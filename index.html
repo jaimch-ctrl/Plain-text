@@ -775,7 +775,7 @@
       `;
 
       try{
-        const res = await fetch(api + "/api/warrant/top?stock=" + stock);
+        const res = await fetch(api + "/api/warrant/top?stock=" + stock + "&t=" + Date.now());
         const data = await res.json();
 
         if(!res.ok || !data.top){
