@@ -1,19 +1,18 @@
 from flask import Flask, request, jsonify, Response
-import json
 from flask_cors import CORS
 import requests
 from datetime import datetime
-# redeploy
+import json
+
 app = Flask(__name__)
 CORS(app)
 
-# ===== 工具 =====
 
 def format_date(date_str):
-    # 2026-04-19 -> 114/04/19
     dt = datetime.strptime(date_str, "%Y-%m-%d")
     year = dt.year - 1911
     return f"{year}/{dt.month:02d}/{dt.day:02d}"
+
 
 def get_stock_name(stock):
     try:
@@ -33,6 +32,7 @@ def get_stock_name(stock):
         print("stock name error:", e)
         return "未知股票"
 
+
 def get_stock_volume(stock):
     try:
         url = f"https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?stockNo={stock}&response=json"
@@ -43,8 +43,7 @@ def get_stock_volume(stock):
             return 0, ""
 
         latest = data["data"][-1]
-
-        volume = int(latest[1].replace(",", ""))
+        volume = int(str(latest[1]).replace(",", ""))
         date = latest[0]
 
         return volume, date
@@ -52,7 +51,6 @@ def get_stock_volume(stock):
         print("volume error:", e)
         return 0, ""
 
-# ===== API =====
 
 @app.route("/api/warrant/top")
 def get_top():
@@ -64,7 +62,6 @@ def get_top():
     stock_name = get_stock_name(stock)
     volume, date = get_stock_volume(stock)
 
-    # 模擬權證（你之後可以換真資料）
     top = {
         "code": "033872",
         "volume": volume
@@ -76,21 +73,20 @@ def get_top():
         {"code": "055222", "volume": int(volume * 0.5)}
     ]
 
-result = {
-    "stock": stock,
-    "stock_name": stock_name,
-    "volume": volume,
-    "date": date,
-    "top": top,
-    "top3": top3
-}
+    result = {
+        "stock": stock,
+        "stock_name": stock_name,
+        "volume": volume,
+        "date": date,
+        "top": top,
+        "top3": top3
+    }
 
-return Response(
-    json.dumps(result, ensure_ascii=False),
-    content_type="application/json; charset=utf-8"
-)
-fix json encoding
-# ===== 啟動 =====
+    return Response(
+        json.dumps(result, ensure_ascii=False),
+        content_type="application/json; charset=utf-8"
+    )
+
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=10000)
