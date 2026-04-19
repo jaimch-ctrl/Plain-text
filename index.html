@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>權證查詢</title>
+<style>
+body {
+    font-family: -apple-system;
+    background: #f5f6fa;
+    padding: 20px;
+}
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+input, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+button {
+    background: black;
+    color: white;
+}
+pre {
+    background: #111;
+    color: #0f0;
+    padding: 10px;
+    border-radius: 10px;
+    overflow: auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>權證查詢</h2>
+
+<p>API：</p>
+<input id="api" value="https://plain-text.onrender.com">
+
+<p>股票代號：</p>
+<input id="stock" placeholder="例如 2454">
+
+<button onclick="run()">查詢</button>
+
+<pre id="result"></pre>
+</div>
+
+<script>
+async function run(){
+    const api = document.getElementById('api').value;
+    const stock = document.getElementById('stock').value;
+
+    const res = await fetch(api + "/api/warrant/top?stock=" + stock);
+    const data = await res.json();
+
+    document.getElementById('result').innerText =
+        JSON.stringify(data, null, 2);
+}
+</script>
+
+</body>
+</html>
