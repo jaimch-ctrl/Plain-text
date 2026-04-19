@@ -16,48 +16,68 @@ def format_date(date_str):
 
 def get_stock_name(stock):
     try:
-        url = f"https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_{stock}.tw"
-        
+        url = "https://mis.twse.com.tw/stock/api/getStockInfo.jsp"
+        params = {
+            "ex_ch": f"tse_{stock}.tw|otc_{stock}.tw",
+            "json": "1",
+            "delay": "0"
+        }
         headers = {
-            "User-Agent": "Mozilla/5.0"
+            "User-Agent": "Mozilla/5.0",
+            "Referer": "https://mis.twse.com.tw/stock/fibest.jsp"
         }
 
-        res = requests.get(url, headers=headers, timeout=10)
+        res = requests.get(url, params=params, headers=headers, timeout=10)
         data = res.json()
+        arr = data.get("msgArray", [])
 
-        if not data["msgArray"]:
-            return "未知股票"
-
-        return data["msgArray"][0].get("n", "未知股票")
+        if arr and arr[0].get("n"):
+            return arr[0].get("n")
 
     except Exception as e:
-        print("name error:", e)
-        return "未知股票"
-    
+        print("MIS name error:", e)
+
+    try:
+        url = "https://openapi.twse.com.tw/v1/opendata/t187ap03_L"
+        res = requests.get(url, timeout=10)
+        data = res.json()
+
+        if isinstance(data, list):
+            for item in data:
+                if str(item.get("公司代號")) == str(stock):
+                    return item.get("公司名稱", "未知股票")
+    except Exception as e:
+        print("OpenAPI name error:", e)
+
+    return "未知股票"
+
+
 def get_stock_volume(stock):
     try:
-        url = f"https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_{stock}.tw"
-        
+        url = "https://www.twse.com.tw/exchangeReport/STOCK_DAY"
+        params = {
+            "response": "json",
+            "date": datetime.now().strftime("%Y%m01"),
+            "stockNo": stock
+        }
         headers = {
-            "User-Agent": "Mozilla/5.0"
+            "User-Agent": "Mozilla/5.0",
+            "Referer": "https://www.twse.com.tw/"
         }
 
-        res = requests.get(url, headers=headers, timeout=10)
+        res = requests.get(url, params=params, headers=headers, timeout=10)
         data = res.json()
 
-        if not data["msgArray"]:
-            return 0, ""
-
-        info = data["msgArray"][0]
-
-        volume = int(info.get("v", "0"))
-        date = info.get("d", "")
-
-        return volume, date
+        if "data" in data and data["data"]:
+            latest = data["data"][-1]
+            volume = int(str(latest[1]).replace(",", ""))
+            date = latest[0]
+            return volume, date
 
     except Exception as e:
-        print("volume error:", e)
-        return 0, ""
+        print("TWSE volume error:", e)
+
+    return 0, ""
 
 @app.route("/api/warrant/top")
 def get_top():
